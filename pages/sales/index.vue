@@ -1,14 +1,21 @@
 <template>
   <div>
     <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+      <div
+        class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold text-gray-900">Sales</h1>
-        <button
-          @click="showNewSaleModal = true"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700"
-        >
-          + New Sale
-        </button>
+        <div class="flex gap-3">
+          <NuxtLink
+            to="/sales/bulk-create"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+            + Bulk Sale
+          </NuxtLink>
+          <button
+            @click="showNewSaleModal = true"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+            + New Sale
+          </button>
+        </div>
       </div>
     </header>
 
@@ -32,9 +39,7 @@
       <!-- Sales List -->
       <div class="bg-white shadow overflow-hidden sm:rounded-lg">
         <div class="px-4 py-5 sm:px-6">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">
-            Recent Sales
-          </h3>
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Sales</h3>
         </div>
         <div class="border-t border-gray-200">
           <ul class="divide-y divide-gray-200">

@@ -295,12 +295,13 @@
       <div
         v-if="showUpdateStockModal"
         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+        <div
+          class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-screen flex flex-col">
           <div class="p-6 border-b border-gray-200">
             <h3 class="text-lg font-medium text-gray-900">Update Stock</h3>
           </div>
 
-          <div class="p-6 space-y-4">
+          <div class="p-6 space-y-4 overflow-y-auto flex-1">
             <!-- Current Stock Display -->
             <div class="bg-gray-50 p-4 rounded-lg">
               <p class="text-sm text-gray-600">Current Stock</p>
