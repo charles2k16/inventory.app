@@ -1,0 +1,25 @@
+<template>
+  <div class="text-center py-12">
+    <div class="text-6xl mb-4">{{ icon }}</div>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">{{ title }}</h3>
+    <p class="text-gray-500 mb-6">{{ description }}</p>
+    <slot name="action"></slot>
+  </div>
+</template>
+
+<script setup>
+defineProps({
+  icon: {
+    type: String,
+    default: '📦'
+  },
+  title: {
+    type: String,
+    default: 'No items found'
+  },
+  description: {
+    type: String,
+    default: 'Get started by creating a new item'
+  }
+});
+</script>
