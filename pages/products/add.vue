@@ -13,6 +13,17 @@
       </div>
     </header>
 
+    <!-- Page Loader -->
+    <div
+      v-if="pageLoading"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-8 flex flex-col items-center">
+        <div
+          class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
+        <p class="text-gray-700 font-medium">Processing import...</p>
+      </div>
+    </div>
+
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Manual Add Form -->
@@ -89,13 +100,14 @@
 
             <div>
               <label class="block text-sm font-medium text-gray-700"
-                >Cost Price (GHS)</label
+                >Cost Price (GHS) *</label
               >
               <input
                 v-model.number="formData.costPrice"
                 type="number"
                 step="0.01"
                 min="0"
+                required
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
             </div>
 
@@ -106,12 +118,16 @@
                 type="number"
                 min="0"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
+              <p class="text-xs text-gray-500 mt-1">Default: 10 units</p>
             </div>
 
             <button
               type="submit"
               :disabled="loading"
-              class="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+              class="w-full bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2">
+              <span
+                v-if="loading"
+                class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent"></span>
               {{ loading ? 'Adding...' : 'Add Product' }}
             </button>
           </form>
@@ -212,7 +228,10 @@
               @click="importProducts"
               :disabled="importLoading || previewData.length === 0"
               type="button"
-              class="flex-1 bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+              class="flex-1 bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2">
+              <span
+                v-if="importLoading"
+                class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent"></span>
               {{ importLoading ? 'Importing...' : 'Import Products' }}
             </button>
           </div>
@@ -268,6 +287,7 @@ const previewData = ref([]);
 const isDragging = ref(false);
 const loading = ref(false);
 const importLoading = ref(false);
+const pageLoading = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
 
@@ -417,6 +437,7 @@ const importProducts = async () => {
   }
 
   importLoading.value = true;
+  pageLoading.value = true;
   errorMessage.value = '';
   successMessage.value = '';
 
@@ -439,12 +460,14 @@ const importProducts = async () => {
 
     const result = await response.json();
     successMessage.value = `Successfully imported ${result.count} products!`;
+    pageLoading.value = false;
 
     setTimeout(() => {
       navigateTo('/products');
     }, 2000);
   } catch (error) {
     errorMessage.value = error.message || 'Failed to import products';
+    pageLoading.value = false;
   } finally {
     importLoading.value = false;
   }
