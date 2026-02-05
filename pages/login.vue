@@ -1,11 +1,13 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2
+          class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           📦 Diaso Inventory System
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
+        <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
           Sign in to your account
         </p>
       </div>
@@ -19,9 +21,8 @@
               name="username"
               type="text"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-              placeholder="Username"
-            />
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-800 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+              placeholder="Username" />
           </div>
           <div>
             <label for="password" class="sr-only">Password</label>
@@ -31,16 +32,15 @@
               name="password"
               type="password"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-              placeholder="Password"
-            />
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:bg-gray-800 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
+              placeholder="Password" />
           </div>
         </div>
 
-        <div v-if="error" class="rounded-md bg-red-50 p-4">
+        <div v-if="error" class="rounded-md bg-red-50 dark:bg-red-900/20 p-4">
           <div class="flex">
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">
+              <h3 class="text-sm font-medium text-red-800 dark:text-red-400">
                 {{ error }}
               </h3>
             </div>
@@ -51,14 +51,13 @@
           <button
             type="submit"
             :disabled="loading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
-          >
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-primary-500 disabled:opacity-50 transition-colors">
             <span v-if="loading">Signing in...</span>
             <span v-else>Sign in</span>
           </button>
         </div>
 
-        <div class="text-center text-sm text-gray-600">
+        <div class="text-center text-sm text-gray-600 dark:text-gray-400">
           <p>Default credentials:</p>
           <p class="font-mono">Username: admin | Password: admin123</p>
         </div>
@@ -69,7 +68,7 @@
 
 <script setup>
 definePageMeta({
-  layout: false
+  layout: false,
 });
 
 const config = useRuntimeConfig();
@@ -86,12 +85,12 @@ const handleLogin = async () => {
     const response = await fetch(`${config.public.apiBase}/auth/login`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         username: username.value,
-        password: password.value
-      })
+        password: password.value,
+      }),
     });
 
     const data = await response.json();
@@ -102,7 +101,7 @@ const handleLogin = async () => {
 
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
-    
+
     navigateTo('/');
   } catch (err) {
     error.value = err.message;

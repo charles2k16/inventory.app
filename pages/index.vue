@@ -256,16 +256,56 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useRuntimeConfig } from 'nuxt/app';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
-const config = useRuntimeConfig();
-const stats = ref(null);
-const loading = ref(true);
-const salesChart = ref(null);
+interface DashboardStats {
+  overview?: {
+    totalProducts: number;
+    totalStockValue: number;
+    totalDebt: number;
+    lowStockCount: number;
+  };
+  sales?: {
+    today?: {
+      amount: number;
+    };
+  };
+  topSellingProducts?: Array<{
+    id: string;
+    product?: {
+      id: string;
+      itemName: string;
+    };
+    quantitySold: number;
+    totalRevenue: number;
+  }>;
+  recentSales?: Array<{
+    id: string;
+    product?: {
+      itemName: string;
+    };
+    quantity: number;
+    totalAmount: number;
+    saleDate: string;
+    paymentStatus: string;
+  }>;
+  lowStockProducts?: Array<{
+    id: string;
+    itemName: string;
+    currentStock: number;
+    reorderLevel: number;
+  }>;
+}
 
-const formatNumber = (num: number) => {
+const config = useRuntimeConfig();
+const stats = ref<DashboardStats | null>(null);
+const loading = ref(true);
+const salesChart = ref<HTMLCanvasElement | null>(null);
+
+const formatNumber = (num?: number) => {
   return new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,

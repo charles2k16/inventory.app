@@ -1,10 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
+export default defineNuxtConfig( {
   devtools: { enabled: true },
-  
+
   modules: [
     '@nuxtjs/tailwindcss',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@nuxtjs/color-mode'
   ],
 
   runtimeConfig: {
@@ -25,9 +26,9 @@ export default defineNuxtConfig({
     }
   },
 
-  css: ['~/assets/css/main.css'],
+  css: [ '~/assets/css/main.css' ],
 
   typescript: {
     strict: true
   }
-})
+} )
