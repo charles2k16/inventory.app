@@ -20,41 +20,223 @@
     </header>
 
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+      <!-- Date Range Selector -->
+      <DateRangeSelector v-model="dateRange" @update:range="dateRange = $event" />
+
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-sm font-medium text-gray-500">Today's Sales</h3>
-          <p class="text-2xl font-bold text-gray-900 mt-2">GHS 0.00</p>
+          <h3 class="text-sm font-medium text-gray-500">{{ dateRangeLabel }}'s Sales</h3>
+          <p class="text-2xl font-bold text-gray-900 mt-2">
+            GHS {{ formatNumber(summaryStats.totalSales) }}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">{{ summaryStats.salesCount }} sales</p>
         </div>
         <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-sm font-medium text-gray-500">This Week</h3>
-          <p class="text-2xl font-bold text-gray-900 mt-2">GHS 0.00</p>
+          <h3 class="text-sm font-medium text-gray-500">Items Sold</h3>
+          <p class="text-2xl font-bold text-gray-900 mt-2">
+            {{ summaryStats.totalItems }}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">{{ dateRangeLabel }}</p>
         </div>
         <div class="bg-white p-6 rounded-lg shadow">
           <h3 class="text-sm font-medium text-gray-500">Pending Payments</h3>
-          <p class="text-2xl font-bold text-red-600 mt-2">GHS 0.00</p>
+          <p class="text-2xl font-bold text-red-600 mt-2">
+            GHS {{ formatNumber(summaryStats.pendingAmount) }}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">{{ summaryStats.pendingCount }} sales</p>
         </div>
       </div>
 
-      <!-- Sales List -->
-      <div class="bg-white shadow overflow-hidden sm:rounded-lg">
-        <div class="px-4 py-5 sm:px-6">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">Recent Sales</h3>
+      <!-- Filters -->
+      <SalesFilters
+        v-model:search="search"
+        v-model:paymentStatus="paymentStatus"
+        @clear="clearFilters" />
+
+      <!-- Sales Table -->
+      <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">Sales</h3>
         </div>
-        <div class="border-t border-gray-200">
-          <ul class="divide-y divide-gray-200">
-            <li class="px-4 py-4 sm:px-6">
-              <p class="text-center text-gray-500 py-8">
-                No sales yet. Create your first sale!
-              </p>
-            </li>
-          </ul>
-        </div>
+        <SalesTable
+          :sales="filteredSales"
+          @view="viewSale"
+          @update-payment="updatePaymentModal" />
       </div>
     </main>
   </div>
 </template>
 
 <script setup>
+const config = useRuntimeConfig();
 const showNewSaleModal = ref(false);
+const sales = ref([]);
+const search = ref('');
+const paymentStatus = ref('');
+const dateRange = ref('today');
+const loadingStats = ref(false);
+
+const summaryStats = ref({
+  totalSales: 0,
+  salesCount: 0,
+  totalItems: 0,
+  pendingAmount: 0,
+  pendingCount: 0,
+});
+
+const formatNumber = num => {
+  return new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(num || 0);
+};
+
+const dateRangeLabel = computed(() => {
+  const labels = {
+    today: 'Today',
+    week: 'This Week',
+    month: 'This Month',
+    all: 'All Time',
+  };
+  return labels[dateRange.value] || 'Today';
+});
+
+const getDateRange = () => {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  switch (dateRange.value) {
+    case 'today':
+      return { start: today, end: new Date(today.getTime() + 24 * 60 * 60 * 1000) };
+    case 'week': {
+      const weekStart = new Date(today);
+      weekStart.setDate(today.getDate() - today.getDay());
+      return { start: weekStart, end: new Date() };
+    }
+    case 'month': {
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      return { start: monthStart, end: new Date() };
+    }
+    case 'all':
+      return { start: new Date('2000-01-01'), end: new Date() };
+    default:
+      return { start: today, end: new Date(today.getTime() + 24 * 60 * 60 * 1000) };
+  }
+};
+
+const filteredSales = computed(() => {
+  const { start, end } = getDateRange();
+
+  return sales.value.filter(sale => {
+    const saleDate = new Date(sale.createdAt);
+    const matchesDate = saleDate >= start && saleDate < end;
+    const matchesSearch =
+      !search.value ||
+      (sale.lenderName &&
+        sale.lenderName.toLowerCase().includes(search.value.toLowerCase())) ||
+      (sale.customerName &&
+        sale.customerName.toLowerCase().includes(search.value.toLowerCase()));
+    const matchesPayment =
+      !paymentStatus.value || sale.paymentStatus === paymentStatus.value;
+
+    return matchesDate && matchesSearch && matchesPayment;
+  });
+});
+
+const calculateSummary = () => {
+  const filtered = filteredSales.value;
+
+  summaryStats.value = {
+    totalSales: filtered.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0),
+    salesCount: filtered.length,
+    totalItems: filtered.reduce((sum, sale) => sum + (sale.items?.length || 0), 0),
+    pendingAmount: filtered
+      .filter(s => s.paymentStatus === 'UNPAID' || s.paymentStatus === 'PARTIAL')
+      .reduce((sum, sale) => sum + (sale.amountDue || 0), 0),
+    pendingCount: filtered.filter(
+      s => s.paymentStatus === 'UNPAID' || s.paymentStatus === 'PARTIAL',
+    ).length,
+  };
+};
+
+const fetchSummaryStats = async () => {
+  try {
+    loadingStats.value = true;
+    const { start, end } = getDateRange();
+    const startDate = start.toISOString().split('T')[0];
+    const endDate = end.toISOString().split('T')[0];
+
+    const response = await fetch(
+      `${config.public.apiBase}/sales/summary?startDate=${startDate}&endDate=${endDate}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      },
+    );
+    const data = await response.json();
+
+    summaryStats.value = {
+      totalSales: data.totalRevenue || 0,
+      salesCount: data.totalSales || 0,
+      totalItems: filteredSales.value.reduce(
+        (sum, sale) => sum + (sale.items?.length || 0),
+        0,
+      ),
+      pendingAmount: data.pendingPayments || 0,
+      pendingCount: filteredSales.value.filter(
+        s => s.paymentStatus === 'UNPAID' || s.paymentStatus === 'PARTIAL',
+      ).length,
+    };
+  } catch (error) {
+    console.error('Error fetching summary stats:', error);
+    calculateSummary();
+  } finally {
+    loadingStats.value = false;
+  }
+};
+
+watch(dateRange, () => {
+  fetchSales();
+  fetchSummaryStats();
+});
+
+watch(filteredSales, () => {
+  fetchSummaryStats();
+});
+
+const fetchSales = async () => {
+  try {
+    const salesResponse = await fetch(`${config.public.apiBase}/sales`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    const salesData = await salesResponse.json();
+    sales.value = salesData.sales || [];
+  } catch (error) {
+    console.error('Error fetching sales:', error);
+  }
+};
+
+const clearFilters = () => {
+  search.value = '';
+  paymentStatus.value = '';
+};
+
+const viewSale = sale => {
+  // Navigate to sale details or open modal
+  navigateTo(`/sales/${sale.id}`);
+};
+
+const updatePaymentModal = sale => {
+  // Open payment update modal
+  console.log('Update payment for:', sale);
+};
+
+onMounted(() => {
+  fetchSales();
+  fetchSummaryStats();
+});
 </script>

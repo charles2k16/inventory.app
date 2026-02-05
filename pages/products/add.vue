@@ -431,8 +431,8 @@ const addSingleProduct = async () => {
 };
 
 const importProducts = async () => {
-  if (previewData.value.length === 0) {
-    errorMessage.value = 'No data to import';
+  if (!selectedFile.value) {
+    errorMessage.value = 'No file selected';
     return;
   }
 
@@ -442,15 +442,15 @@ const importProducts = async () => {
   successMessage.value = '';
 
   try {
-    const normalizedData = normalizeImportData(previewData.value);
+    const formData = new FormData();
+    formData.append('file', selectedFile.value);
 
     const response = await fetch(`${config.public.apiBase}/products/bulk-import`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify({ products: normalizedData }),
+      body: formData,
     });
 
     if (!response.ok) {
@@ -478,24 +478,29 @@ const resetImport = () => {
   previewData.value = [];
 };
 
-const downloadTemplate = () => {
-  const template = [
-    {
-      itemName: 'Product Name',
-      itemDescription: 'Product Description',
-      category: 'Equipment',
-      barcodeNumber: '123456789',
-      currentStock: 10,
-      sellingPrice: 99.99,
-      costPrice: 50.0,
-      reorderLevel: 5,
-    },
-  ];
+const downloadTemplate = async () => {
+  try {
+    const response = await fetch(`${config.public.apiBase}/products/import/template`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
 
-  const worksheet = XLSX.utils.json_to_sheet(template);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Products');
+    if (!response.ok) {
+      throw new Error('Failed to download template');
+    }
 
-  XLSX.writeFile(workbook, 'product-template.xlsx');
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'product-template.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    errorMessage.value = 'Failed to download template: ' + error.message;
+  }
 };
 </script>
