@@ -1,8 +1,8 @@
 <template>
   <div class="flex justify-center items-center" :class="containerClass">
     <div
-      class="animate-spin rounded-full border-b-2"
-      :class="spinnerClass"
+      class="animate-spin rounded-full border-b-2 border-primary-600"
+      :class="spinnerClass""
     ></div>
   </div>
 </template>

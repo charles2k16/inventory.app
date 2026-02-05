@@ -1,13 +1,15 @@
 <template>
   <div>
-    <header class="bg-white shadow">
+    <header class="bg-white dark:bg-gray-800 shadow">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
               {{ product?.itemName || 'Loading...' }}
             </h1>
-            <p class="text-sm text-gray-500 mt-1" v-if="product?.barcodeNumber">
+            <p
+              class="text-sm text-gray-500 dark:text-gray-400 mt-1"
+              v-if="product?.barcodeNumber">
               Barcode: {{ product.barcodeNumber }}
             </p>
           </div>
@@ -35,14 +37,15 @@
       <div class="flex flex-col items-center">
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-        <p class="text-gray-700">Loading product details...</p>
+        <p class="text-gray-700 dark:text-gray-300">Loading product details...</p>
       </div>
     </div>
 
     <!-- Error State -->
     <div v-if="error" class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-      <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-        <p class="text-red-800">{{ error }}</p>
+      <div
+        class="bg-red-50 dark:bg-red-900 border border-red-200 dark:border-red-700 rounded-lg p-4">
+        <p class="text-red-800 dark:text-red-200">{{ error }}</p>
       </div>
     </div>
 
@@ -51,15 +54,15 @@
       v-if="!loading && !error && product"
       class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Tab Navigation -->
-      <div class="border-b border-gray-200 mb-6">
+      <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
         <div class="flex space-x-8">
           <button
             @click="activeTab = 'details'"
             :class="[
               'py-2 px-1 border-b-2 font-medium text-sm',
               activeTab === 'details'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600',
             ]">
             Details
           </button>
@@ -79,37 +82,49 @@
       <!-- Details Tab -->
       <div v-if="activeTab === 'details'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Main Info Card -->
-        <div class="md:col-span-2 bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-6">Product Information</h2>
+        <div class="md:col-span-2 bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-6">
+            Product Information
+          </h2>
 
           <div class="grid grid-cols-2 gap-6">
             <div>
-              <label class="block text-sm font-medium text-gray-700">Product Name</label>
-              <p class="mt-1 text-gray-900 font-medium">{{ product.itemName }}</p>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Product Name</label
+              >
+              <p class="mt-1 text-gray-900 dark:text-white font-medium">
+                {{ product.itemName }}
+              </p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Category</label>
-              <p class="mt-1 text-gray-900">{{ product.category }}</p>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Category</label
+              >
+              <p class="mt-1 text-gray-900 dark:text-white">{{ product.category }}</p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Barcode Number</label
               >
-              <p class="mt-1 text-gray-900">{{ product.barcodeNumber || 'N/A' }}</p>
+              <p class="mt-1 text-gray-900 dark:text-white">
+                {{ product.barcodeNumber || 'N/A' }}
+              </p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Product Number</label
               >
-              <p class="mt-1 text-gray-900">#{{ product.itemNumber }}</p>
+              <p class="mt-1 text-gray-900 dark:text-white">#{{ product.itemNumber }}</p>
             </div>
 
             <div class="col-span-2">
-              <label class="block text-sm font-medium text-gray-700">Description</label>
-              <p class="mt-1 text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Description</label
+              >
+              <p class="mt-1 text-gray-900 dark:text-white">
                 {{ product.itemDescription || 'No description' }}
               </p>
             </div>
@@ -117,37 +132,47 @@
         </div>
 
         <!-- Stock Info Card -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-6">Stock Information</h2>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-6">
+            Stock Information
+          </h2>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700">Current Stock</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Current Stock</label
+              >
               <p
                 :class="[
                   'mt-1 text-2xl font-bold',
                   product.currentStock <= product.reorderLevel
-                    ? 'text-red-600'
-                    : 'text-green-600',
+                    ? 'text-red-600 dark:text-red-400'
+                    : 'text-green-600 dark:text-green-400',
                 ]">
                 {{ product.currentStock }} {{ product.units }}
               </p>
             </div>
 
-            <div class="pt-4 border-t border-gray-200">
-              <label class="block text-sm font-medium text-gray-700">Reorder Level</label>
-              <p class="mt-1 text-gray-900">{{ product.reorderLevel }}</p>
+            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Reorder Level</label
+              >
+              <p class="mt-1 text-gray-900 dark:text-white">{{ product.reorderLevel }}</p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Selling Price</label>
-              <p class="mt-1 text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Selling Price</label
+              >
+              <p class="mt-1 text-gray-900 dark:text-white">
                 GHS {{ formatNumber(product.sellingPrice) }}
               </p>
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Cost Price</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Cost Price</label
+              >
               <p class="mt-1 text-gray-900">GHS {{ formatNumber(product.costPrice) }}</p>
             </div>
 
@@ -198,50 +223,57 @@
           <div
             v-if="!product.stockMovements || product.stockMovements.length === 0"
             class="text-center py-12">
-            <p class="text-gray-500">No stock movements recorded yet</p>
+            <p class="text-gray-500 dark:text-gray-400">
+              No stock movements recorded yet
+            </p>
           </div>
 
           <div v-else class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Date
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Type
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Qty Before
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Change
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Qty After
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Reason
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Notes
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Created By
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="movement in product.stockMovements" :key="movement.id">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <tbody
+                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr
+                  v-for="movement in product.stockMovements"
+                  :key="movement.id"
+                  class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                     {{ formatDate(movement.createdAt) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
@@ -254,15 +286,15 @@
                     </span>
                   </td>
                   <td
-                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                     {{ movement.quantityBefore }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <span
                       :class="
                         movement.type === 'OUT' || movement.type === 'ADJUSTMENT'
-                          ? 'text-red-600'
-                          : 'text-green-600'
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-green-600 dark:text-green-400'
                       ">
                       {{
                         movement.type === 'OUT' || movement.type === 'ADJUSTMENT'
@@ -272,16 +304,18 @@
                     </span>
                   </td>
                   <td
-                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                     {{ movement.quantityAfter }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {{ movement.reason || '-' }}
                   </td>
-                  <td class="px-6 py-4 text-sm text-gray-500">
+                  <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                     {{ movement.notes || '-' }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {{ movement.createdBy || '-' }}
                   </td>
                 </tr>

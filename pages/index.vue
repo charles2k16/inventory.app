@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Header -->
-    <header class="bg-white shadow">
+    <header class="bg-white dark:bg-gray-800 shadow">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
       </div>
     </header>
 
@@ -19,12 +19,12 @@
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           <!-- Total Products -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
             <div class="p-5">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg
-                    class="h-6 w-6 text-gray-400"
+                    class="h-6 w-6 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -37,10 +37,11 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                   <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                       Total Products
                     </dt>
-                    <dd class="text-lg font-semibold text-gray-900">
+                    <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                       {{ stats?.overview?.totalProducts || 0 }}
                     </dd>
                   </dl>
@@ -50,12 +51,12 @@
           </div>
 
           <!-- Total Stock Value -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
             <div class="p-5">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg
-                    class="h-6 w-6 text-gray-400"
+                    class="h-6 w-6 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -68,10 +69,11 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                   <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                       Stock Value
                     </dt>
-                    <dd class="text-lg font-semibold text-gray-900">
+                    <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                       GHS {{ formatNumber(stats?.overview?.totalStockValue) }}
                     </dd>
                   </dl>
@@ -81,12 +83,12 @@
           </div>
 
           <!-- Today's Sales -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
             <div class="p-5">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg
-                    class="h-6 w-6 text-gray-400"
+                    class="h-6 w-6 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -99,10 +101,11 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                   <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                       Today's Sales
                     </dt>
-                    <dd class="text-lg font-semibold text-gray-900">
+                    <dd class="text-lg font-semibold text-gray-900 dark:text-white">
                       GHS {{ formatNumber(stats?.sales?.today?.amount) }}
                     </dd>
                   </dl>
@@ -112,12 +115,12 @@
           </div>
 
           <!-- Outstanding Debt -->
-          <div class="bg-white overflow-hidden shadow rounded-lg">
+          <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
             <div class="p-5">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg
-                    class="h-6 w-6 text-gray-400"
+                    class="h-6 w-6 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -130,8 +133,11 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                   <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">Total Debt</dt>
-                    <dd class="text-lg font-semibold text-red-600">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                      Total Debt
+                    </dt>
+                    <dd class="text-lg font-semibold text-red-600 dark:text-red-400">
                       GHS {{ formatNumber(stats?.overview?.totalDebt) }}
                     </dd>
                   </dl>
@@ -144,32 +150,37 @@
         <!-- Charts and Tables Row -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <!-- Sales Chart -->
-          <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Sales Trend</h3>
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              Sales Trend
+            </h3>
             <div class="h-64">
               <canvas ref="salesChart"></canvas>
             </div>
           </div>
 
           <!-- Top Selling Products -->
-          <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Top Selling Products</h3>
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              Top Selling Products
+            </h3>
             <div class="flow-root">
-              <ul class="-my-5 divide-y divide-gray-200">
+              <ul class="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                 <li
                   v-for="item in stats?.topSellingProducts"
                   :key="item.product?.id"
                   class="py-4">
                   <div class="flex items-center space-x-4">
                     <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900 truncate">
+                      <p
+                        class="text-sm font-medium text-gray-900 dark:text-white truncate">
                         {{ item.product?.itemName }}
                       </p>
-                      <p class="text-sm text-gray-500">
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
                         {{ item.quantitySold }} units sold
                       </p>
                     </div>
-                    <div class="text-sm font-semibold text-gray-900">
+                    <div class="text-sm font-semibold text-gray-900 dark:text-white">
                       GHS {{ formatNumber(item.totalRevenue) }}
                     </div>
                   </div>
@@ -182,30 +193,32 @@
         <!-- Recent Sales and Low Stock -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Recent Sales -->
-          <div class="bg-white shadow rounded-lg p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Recent Sales</h3>
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+              Recent Sales
+            </h3>
             <div class="flow-root">
-              <ul class="-my-5 divide-y divide-gray-200">
+              <ul class="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                 <li v-for="sale in stats?.recentSales" :key="sale.id" class="py-4">
                   <div class="flex items-center space-x-4">
                     <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900">
+                      <p class="text-sm font-medium text-gray-900 dark:text-white">
                         {{ sale.product?.itemName }}
                       </p>
-                      <p class="text-sm text-gray-500">
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
                         {{ formatDate(sale.saleDate) }}
                       </p>
                     </div>
                     <div class="flex flex-col items-end">
-                      <span class="text-sm font-semibold text-gray-900">
+                      <span class="text-sm font-semibold text-gray-900 dark:text-white">
                         GHS {{ formatNumber(sale.totalAmount) }}
                       </span>
                       <span
                         :class="[
                           'inline-flex items-center px-2 py-0.5 rounded text-xs font-medium',
                           sale.paymentStatus === 'PAID'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800',
+                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
                         ]">
                         {{ sale.paymentStatus }}
                       </span>
@@ -217,30 +230,32 @@
           </div>
 
           <!-- Low Stock Alert -->
-          <div class="bg-white shadow rounded-lg p-6">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
             <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-medium text-gray-900">Low Stock Alert</h3>
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                Low Stock Alert
+              </h3>
               <span
-                class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                 {{ stats?.overview?.lowStockCount || 0 }} items
               </span>
             </div>
             <div class="flow-root">
-              <ul class="-my-5 divide-y divide-gray-200">
+              <ul class="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                 <li
                   v-for="product in stats?.lowStockProducts"
                   :key="product.id"
                   class="py-4">
                   <div class="flex items-center space-x-4">
                     <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-gray-900">
+                      <p class="text-sm font-medium text-gray-900 dark:text-white">
                         {{ product.itemName }}
                       </p>
-                      <p class="text-sm text-gray-500">
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
                         Reorder level: {{ product.reorderLevel }}
                       </p>
                     </div>
-                    <div class="text-sm font-semibold text-red-600">
+                    <div class="text-sm font-semibold text-red-600 dark:text-red-400">
                       {{ product.currentStock }} left
                     </div>
                   </div>

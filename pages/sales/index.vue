@@ -1,9 +1,9 @@
 <template>
   <div>
-    <header class="bg-white shadow">
+    <header class="bg-white dark:bg-gray-800 shadow">
       <div
         class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Sales</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Sales</h1>
         <div class="flex gap-3">
           <NuxtLink
             to="/sales/bulk-create"
@@ -25,26 +25,36 @@
 
       <!-- Summary Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-sm font-medium text-gray-500">{{ dateRangeLabel }}'s Sales</h3>
-          <p class="text-2xl font-bold text-gray-900 mt-2">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            {{ dateRangeLabel }}'s Sales
+          </h3>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
             GHS {{ formatNumber(summaryStats.totalSales) }}
           </p>
-          <p class="text-xs text-gray-500 mt-1">{{ summaryStats.salesCount }} sales</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {{ summaryStats.salesCount }} sales
+          </p>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-sm font-medium text-gray-500">Items Sold</h3>
-          <p class="text-2xl font-bold text-gray-900 mt-2">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Items Sold</h3>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white mt-2">
             {{ summaryStats.totalItems }}
           </p>
-          <p class="text-xs text-gray-500 mt-1">{{ dateRangeLabel }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {{ dateRangeLabel }}
+          </p>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow">
-          <h3 class="text-sm font-medium text-gray-500">Pending Payments</h3>
-          <p class="text-2xl font-bold text-red-600 mt-2">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+          <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            Pending Payments
+          </h3>
+          <p class="text-2xl font-bold text-red-600 dark:text-red-400 mt-2">
             GHS {{ formatNumber(summaryStats.pendingAmount) }}
           </p>
-          <p class="text-xs text-gray-500 mt-1">{{ summaryStats.pendingCount }} sales</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            {{ summaryStats.pendingCount }} sales
+          </p>
         </div>
       </div>
 
@@ -55,9 +65,11 @@
         @clear="clearFilters" />
 
       <!-- Sales Table -->
-      <div class="bg-white shadow rounded-lg">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">Sales</h3>
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+            Sales
+          </h3>
         </div>
         <SalesTable
           :sales="filteredSales"

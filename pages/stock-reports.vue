@@ -1,9 +1,11 @@
 <template>
   <div>
-    <header class="bg-white shadow">
+    <header class="bg-white dark:bg-gray-800 shadow">
       <div
         class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Weekly Stock Reports</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Weekly Stock Reports
+        </h1>
         <button
           @click="createNewReport"
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
@@ -16,25 +18,27 @@
       <!-- Current Week Card -->
       <div
         v-if="currentReport"
-        class="bg-blue-50 border-l-4 border-blue-400 p-6 mb-6 rounded-r-lg">
+        class="bg-blue-50 dark:bg-blue-900 border-l-4 border-blue-400 dark:border-blue-600 p-6 mb-6 rounded-r-lg">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-blue-800">Current Week Report</p>
-            <p class="text-lg font-semibold text-blue-900 mt-1">
+            <p class="text-sm font-medium text-blue-800 dark:text-blue-200">
+              Current Week Report
+            </p>
+            <p class="text-lg font-semibold text-blue-900 dark:text-blue-100 mt-1">
               Week {{ currentReport.weekNumber }} - {{ currentReport.year }}
             </p>
-            <p class="text-sm text-blue-700 mt-2">
+            <p class="text-sm text-blue-700 dark:text-blue-200 mt-2">
               Opening Stock Value: GHS {{ formatNumber(currentReport.totalValue) }}
             </p>
             <p
               v-if="
                 currentReport.additionalStock && currentReport.additionalStock.length > 0
               "
-              class="text-sm text-blue-700">
+              class="text-sm text-blue-700 dark:text-blue-200">
               Additional Stock Value: GHS
               {{ formatNumber(currentReport.additionalStockValue) }}
             </p>
-            <p class="text-sm font-medium text-blue-900 mt-2">
+            <p class="text-sm font-medium text-blue-900 dark:text-blue-100 mt-2">
               Expected Total Value: GHS
               {{
                 formatNumber(
@@ -48,7 +52,7 @@
                 currentReport.closingStock &&
                 Object.keys(currentReport.closingStock).length > 0
               "
-              class="text-sm font-medium text-green-700 mt-2">
+              class="text-sm font-medium text-green-700 dark:text-green-200 mt-2">
               Goods Sold: GHS
               {{
                 formatNumber(
@@ -79,51 +83,59 @@
       </div>
 
       <!-- Reports Table -->
-      <div class="bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">All Reports</h3>
+      <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">All Reports</h3>
         </div>
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Week
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Period
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Opening Stock
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
                 <th
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody
+              class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
               <tr v-if="reports.length === 0">
-                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                <td
+                  colspan="5"
+                  class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
                   No reports found
                 </td>
               </tr>
-              <tr v-for="report in reports" :key="report.id" class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr
+                v-for="report in reports"
+                :key="report.id"
+                class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                   W{{ report.weekNumber }}/{{ report.year }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td
+                  class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   {{ formatDate(report.startDate) }} - {{ formatDate(report.endDate) }}
                 </td>
                 <td
-                  class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                  class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">
                   GHS {{ formatNumber(report.totalValue) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -131,8 +143,8 @@
                     :class="[
                       'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
                       Object.keys(report.closingStock).length > 0
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-yellow-100 text-yellow-800',
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
                     ]">
                     {{ Object.keys(report.closingStock).length > 0 ? 'Closed' : 'Open' }}
                   </span>
@@ -140,13 +152,13 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                   <button
                     @click="selectedReport = report"
-                    class="text-primary-600 hover:text-primary-900">
+                    class="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300">
                     View
                   </button>
                   <button
                     v-if="Object.keys(report.closingStock).length > 0"
                     @click="viewVariance(report)"
-                    class="text-blue-600 hover:text-blue-900">
+                    class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
                     Variance
                   </button>
                 </td>
@@ -158,8 +170,8 @@
         <!-- Pagination -->
         <div
           v-if="totalPages > 1"
-          class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-          <div class="text-sm text-gray-600">
+          class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+          <div class="text-sm text-gray-600 dark:text-gray-400">
             Showing {{ (currentPage - 1) * limit + 1 }} to
             {{ Math.min(currentPage * limit, pagination.total) }} of
             {{ pagination.total }} reports
@@ -168,13 +180,13 @@
             <button
               @click="currentPage = Math.max(1, currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50">
+              class="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-md text-sm hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50">
               Previous
             </button>
             <button
               @click="currentPage = Math.min(totalPages, currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50">
+              class="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 rounded-md text-sm hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50">
               Next
             </button>
           </div>

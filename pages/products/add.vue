@@ -1,9 +1,9 @@
 <template>
   <div>
-    <header class="bg-white shadow">
+    <header class="bg-white dark:bg-gray-800 shadow">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center">
-          <h1 class="text-3xl font-bold text-gray-900">Add Products</h1>
+          <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Add Products</h1>
           <NuxtLink
             to="/products"
             class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -17,36 +17,40 @@
     <div
       v-if="pageLoading"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-8 flex flex-col items-center">
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-8 flex flex-col items-center">
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-        <p class="text-gray-700 font-medium">Processing import...</p>
+        <p class="text-gray-700 dark:text-gray-300 font-medium">Processing import...</p>
       </div>
     </div>
 
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Manual Add Form -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">Add Single Product</h2>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            Add Single Product
+          </h2>
           <form @submit.prevent="addSingleProduct" class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Product Name *</label
               >
               <input
                 v-model="formData.itemName"
                 type="text"
                 required
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Description</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Description</label
+              >
               <textarea
                 v-model="formData.itemDescription"
                 rows="3"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500"></textarea>
             </div>
 
             <div>
@@ -134,8 +138,10 @@
         </div>
 
         <!-- Bulk Import -->
-        <div class="bg-white shadow rounded-lg p-6">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">Bulk Import</h2>
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            Bulk Import
+          </h2>
 
           <!-- File Upload Area -->
           <div
@@ -145,8 +151,8 @@
             :class="[
               'border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition',
               isDragging
-                ? 'border-primary-500 bg-primary-50'
-                : 'border-gray-300 bg-gray-50 hover:border-gray-400',
+                ? 'border-primary-500 bg-primary-50 dark:bg-primary-900'
+                : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 hover:border-gray-400',
             ]">
             <svg
               class="mx-auto h-12 w-12 text-gray-400 mb-4"
@@ -156,8 +162,10 @@
               <path
                 d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-8l-3.172-3.172a4 4 0 00-5.656 0L28 20M9.172 9.172L12 12m0 0l3.172-3.172a4 4 0 015.656 0L28 20" />
             </svg>
-            <p class="text-gray-700 font-medium mb-2">Drag and drop your file here</p>
-            <p class="text-gray-500 text-sm mb-4">or</p>
+            <p class="text-gray-700 dark:text-gray-300 font-medium mb-2">
+              Drag and drop your file here
+            </p>
+            <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">or</p>
             <input
               ref="fileInput"
               type="file"
@@ -178,40 +186,49 @@
           <!-- Selected File Info -->
           <div
             v-if="selectedFile"
-            class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded">
-            <p class="text-sm text-blue-900">
+            class="mt-4 p-4 bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-600 rounded">
+            <p class="text-sm text-blue-900 dark:text-blue-200">
               <strong>Selected file:</strong> {{ selectedFile.name }}
             </p>
           </div>
 
           <!-- Preview Table -->
           <div v-if="previewData.length > 0" class="mt-6">
-            <h3 class="text-sm font-medium text-gray-900 mb-3">Preview (First 5 rows)</h3>
-            <div class="overflow-x-auto border border-gray-300 rounded-lg">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-100">
+            <h3 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
+              Preview (First 5 rows)
+            </h3>
+            <div
+              class="overflow-x-auto border border-gray-300 dark:border-gray-600 rounded-lg">
+              <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-100 dark:bg-gray-700">
                   <tr>
                     <th
                       v-for="header in Object.keys(previewData[0])"
                       :key="header"
-                      class="px-4 py-2 text-left text-xs font-medium text-gray-900 uppercase">
+                      class="px-4 py-2 text-left text-xs font-medium text-gray-900 dark:text-white uppercase">
                       {{ header }}
                     </th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200">
-                  <tr v-for="(row, idx) in previewData.slice(0, 5)" :key="idx">
+                <tbody
+                  class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                  <tr
+                    v-for="(row, idx) in previewData.slice(0, 5)"
+                    :key="idx"
+                    class="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td
                       v-for="(val, key) in row"
                       :key="key"
-                      class="px-4 py-2 text-sm text-gray-600">
+                      class="px-4 py-2 text-sm text-gray-600 dark:text-gray-400">
                       {{ val }}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <p v-if="previewData.length > 5" class="text-xs text-gray-500 mt-2">
+            <p
+              v-if="previewData.length > 5"
+              class="text-xs text-gray-500 dark:text-gray-400 mt-2">
               Showing 5 of {{ previewData.length }} rows
             </p>
           </div>
@@ -237,8 +254,8 @@
           </div>
 
           <!-- Template Download -->
-          <div class="mt-6 pt-6 border-t border-gray-200">
-            <p class="text-sm text-gray-700 mb-3">
+          <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">
               <strong>Need help?</strong> Download a template to see the required format.
             </p>
             <button

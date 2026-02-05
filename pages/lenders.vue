@@ -1,9 +1,11 @@
 <template>
   <div>
-    <header class="bg-white shadow">
+    <header class="bg-white dark:bg-gray-800 shadow">
       <div
         class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-900">Credit Customers (Lenders)</h1>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Credit Customers (Lenders)
+        </h1>
         <button
           @click="openCreateModal"
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
@@ -14,11 +16,14 @@
 
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <!-- Total Debt Card -->
-      <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+      <div
+        class="bg-red-50 dark:bg-red-900 border-l-4 border-red-400 dark:border-red-600 p-4 mb-6">
         <div class="flex">
           <div class="flex-1">
-            <p class="text-sm font-medium text-red-800">Total Outstanding Debt</p>
-            <p class="text-2xl font-bold text-red-900 mt-1">
+            <p class="text-sm font-medium text-red-800 dark:text-red-200">
+              Total Outstanding Debt
+            </p>
+            <p class="text-2xl font-bold text-red-900 dark:text-red-100 mt-1">
               {{ formatNumber(totalDebt) }}
             </p>
           </div>
@@ -26,58 +31,70 @@
       </div>
 
       <!-- Lenders List -->
-      <div class="bg-white shadow sm:rounded-lg">
+      <div class="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
         <div class="px-4 py-5 sm:p-6">
-          <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Customers</h3>
+          <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
+            Customers
+          </h3>
           <div v-if="lenders.length > 0" class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead class="bg-gray-50 dark:bg-gray-700">
                 <tr>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Name
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Code
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Phone
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Current Debt
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Total Purchased
                   </th>
                   <th
-                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Status
                   </th>
                   <th
-                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="lender in lenders" :key="lender.id">
+              <tbody
+                class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                <tr
+                  v-for="lender in lenders"
+                  :key="lender.id"
+                  class="hover:bg-gray-50 dark:hover:bg-gray-700">
                   <td
-                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
                     {{ lender.name }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                     {{ lender.customerCode }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
                     {{ lender.phone || '-' }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-semibold"
-                    :class="lender.currentDebt > 0 ? 'text-red-600' : 'text-green-600'">
+                    :class="
+                      lender.currentDebt > 0
+                        ? 'text-red-600 dark:text-red-400'
+                        : 'text-green-600 dark:text-green-400'
+                    ">
                     {{ formatNumber(lender.currentDebt) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -88,8 +105,8 @@
                       :class="[
                         'px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full',
                         lender.status === 'ACTIVE'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800',
+                          ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                          : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                       ]">
                       {{ lender.status }}
                     </span>
@@ -111,7 +128,9 @@
               </tbody>
             </table>
           </div>
-          <p v-else class="text-gray-500 text-center py-12">No credit customers yet.</p>
+          <p v-else class="text-gray-500 dark:text-gray-400 text-center py-12">
+            No credit customers yet.
+          </p>
         </div>
       </div>
     </main>
@@ -121,7 +140,7 @@
       v-if="showCustomerModal"
       class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div
-        class="bg-white rounded-lg shadow-lg max-w-md w-full max-h-screen flex flex-col">
+        class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full max-h-screen flex flex-col">
         <div class="px-6 py-4 border-b border-gray-200">
           <h3 class="text-lg font-medium text-gray-900">
             {{ editingCustomer ? 'Edit Customer' : 'Create New Customer' }}
@@ -131,22 +150,26 @@
         <div class="px-6 py-4 overflow-y-auto flex-1">
           <div
             v-if="customerError"
-            class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            class="mb-4 p-3 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-200 rounded">
             {{ customerError }}
           </div>
 
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700">Name</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Name</label
+              >
               <input
                 v-model="customerForm.name"
                 type="text"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"
+                class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"
                 required />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Phone</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Phone</label
+              >
               <input
                 v-model="customerForm.phone"
                 type="text"
