@@ -1,19 +1,21 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8 px-4">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
     <div class="max-w-6xl mx-auto">
       <!-- Header -->
-      <div class="bg-white shadow mb-8 -mx-4 px-4">
+      <div class="bg-white dark:bg-gray-800 shadow mb-8 -mx-4 px-4">
         <div class="max-w-6xl mx-auto py-6 px-0">
           <div class="flex justify-between items-center">
             <div>
-              <h1 class="text-3xl font-bold text-gray-900">Create Bulk Sale</h1>
-              <p class="text-gray-600 mt-2">
+              <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+                Create Bulk Sale
+              </h1>
+              <p class="text-gray-600 dark:text-gray-400 mt-2">
                 Select multiple products and create a sale order
               </p>
             </div>
             <NuxtLink
               to="/sales"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               ← Back to Sales
             </NuxtLink>
           </div>
@@ -23,12 +25,15 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Product Selection -->
         <div class="lg:col-span-2">
-          <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Select Products</h2>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Select Products
+            </h2>
 
             <!-- Available Products -->
             <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2"
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >Search & Select Product</label
               >
               <div class="flex gap-2 mb-2">
@@ -36,14 +41,14 @@
                   v-model="productSearch"
                   type="text"
                   placeholder="Search products..."
-                  class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+                  class="flex-1 rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border" />
                 <button
                   @click="
                     selectedProductId = '';
                     productSearch = '';
                   "
                   v-if="productSearch"
-                  class="px-3 py-2 text-gray-600 hover:text-gray-900 font-medium">
+                  class="px-3 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium">
                   ✕
                 </button>
                 <button
@@ -57,7 +62,7 @@
                 v-if="filteredProducts.length > 0"
                 v-model="selectedProductId"
                 size="5"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border">
+                class="w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
                 <option value="">Choose a product...</option>
                 <option
                   v-for="product in filteredProducts"
@@ -68,44 +73,47 @@
               </select>
               <div
                 v-else-if="productSearch"
-                class="mt-2 p-3 text-sm text-gray-600 bg-gray-50 rounded-md border border-gray-300">
+                class="mt-2 p-3 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600">
                 No products found matching "{{ productSearch }}"
               </div>
               <div
                 v-else
-                class="mt-2 p-3 text-sm text-gray-500 bg-gray-50 rounded-md border border-dashed border-gray-300">
+                class="mt-2 p-3 text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-md border border-dashed border-gray-300 dark:border-gray-600">
                 Type to search for products
               </div>
             </div>
 
             <!-- Selected Products -->
             <div v-if="saleItems.length > 0" class="space-y-4">
-              <h3 class="text-md font-semibold text-gray-900">Products in Sale</h3>
+              <h3 class="text-md font-semibold text-gray-900 dark:text-white">
+                Products in Sale
+              </h3>
               <div
-                class="max-h-96 overflow-y-auto space-y-4 border border-gray-200 rounded-lg p-4 bg-gray-50">
+                class="max-h-96 overflow-y-auto space-y-4 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
                 <div
                   v-for="(item, index) in saleItems"
                   :key="index"
-                  class="border border-gray-200 rounded-lg p-4 bg-white">
+                  class="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800">
                   <div class="flex justify-between items-start mb-4">
                     <div>
-                      <p class="font-semibold text-gray-900">
+                      <p class="font-semibold text-gray-900 dark:text-white">
                         {{ item.product.itemName }}
                       </p>
-                      <p class="text-sm text-gray-600">
+                      <p class="text-sm text-gray-600 dark:text-gray-400">
                         Available stock: {{ item.product.currentStock }}
                       </p>
                     </div>
                     <button
                       @click="removeSaleItem(index)"
-                      class="text-red-600 hover:text-red-900 text-sm font-medium">
+                      class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">
                       Remove
                     </button>
                   </div>
 
                   <div class="grid grid-cols-3 gap-4">
                     <div>
-                      <label class="block text-sm font-medium text-gray-700"
+                      <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                         >Quantity</label
                       >
                       <input
@@ -114,21 +122,25 @@
                         min="1"
                         :max="item.product.currentStock"
                         @change="calculateTotals"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+                        class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border" />
                     </div>
                     <div>
-                      <label class="block text-sm font-medium text-gray-700"
+                      <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                         >Unit Price</label
                       >
                       <div
-                        class="mt-1 px-3 py-2 bg-gray-50 rounded-md border border-gray-300 text-gray-900 font-semibold">
+                        class="mt-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-semibold">
                         {{ formatNumber(item.unitPrice) }}
                       </div>
                     </div>
                     <div>
-                      <label class="block text-sm font-medium text-gray-700">Total</label>
+                      <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                        >Total</label
+                      >
                       <div
-                        class="mt-1 px-3 py-2 bg-gray-50 rounded-md border border-gray-300 text-gray-900 font-semibold">
+                        class="mt-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-md border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white font-semibold">
                         {{ formatNumber(item.quantity * item.unitPrice) }}
                       </div>
                     </div>
@@ -139,8 +151,8 @@
 
             <div
               v-else
-              class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-              <p class="text-gray-600">
+              class="text-center py-8 bg-gray-50 dark:bg-gray-700 rounded-lg border border-dashed border-gray-300 dark:border-gray-600">
+              <p class="text-gray-600 dark:text-gray-400">
                 No products selected yet. Add products to create a sale.
               </p>
             </div>
@@ -150,22 +162,26 @@
         <!-- Sale Summary & Customer Details -->
         <div>
           <!-- Sale Summary -->
-          <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Sale Summary</h2>
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              Sale Summary
+            </h2>
 
             <div class="space-y-3 mb-6">
-              <div class="flex justify-between text-gray-700">
+              <div class="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>Products Count:</span>
                 <span class="font-semibold">{{ saleItems.length }}</span>
               </div>
-              <div class="flex justify-between text-gray-700">
+              <div class="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>Total Quantity:</span>
                 <span class="font-semibold">{{ totalQuantity }}</span>
               </div>
               <div
-                class="border-t border-gray-200 pt-3 flex justify-between text-gray-900 font-bold text-lg">
+                class="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-gray-900 dark:text-white font-bold text-lg">
                 <span>Total Amount:</span>
-                <span class="text-primary-600">{{ formatNumber(totalAmount) }}</span>
+                <span class="text-primary-600 dark:text-primary-400">{{
+                  formatNumber(totalAmount)
+                }}</span>
               </div>
             </div>
 
@@ -173,27 +189,29 @@
 
             <!-- Customer Details -->
             <div class="space-y-4">
-              <h3 class="font-semibold text-gray-900">Customer Details</h3>
+              <h3 class="font-semibold text-gray-900 dark:text-white">
+                Customer Details
+              </h3>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700"
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >Customer Name</label
                 >
                 <input
                   v-model="formData.customerName"
                   type="text"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border"
                   placeholder="Enter customer name"
                   required />
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700"
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >Payment Method</label
                 >
                 <select
                   v-model="formData.paymentMethod"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border">
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
                   <option value="CASH">Cash</option>
                   <option value="CREDIT">Credit</option>
                   <option value="CHEQUE">Cheque</option>
@@ -202,12 +220,12 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700"
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >Payment Status</label
                 >
                 <select
                   v-model="formData.paymentStatus"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border">
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
                   <option value="PAID">Paid</option>
                   <option value="PARTIAL">Partial</option>
                   <option value="UNPAID">Unpaid</option>
@@ -215,7 +233,9 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700">Amount Paid</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Amount Paid</label
+                >
                 <input
                   v-model.number="formData.amountPaid"
                   type="number"
@@ -223,23 +243,26 @@
                   min="0"
                   :max="totalAmount"
                   @change="updatePaymentStatus"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border" />
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border" />
               </div>
 
-              <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
-                <p class="text-sm text-gray-600">
+              <div
+                class="bg-gray-50 dark:bg-gray-700 p-3 rounded-md border border-gray-200 dark:border-gray-600">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
                   Amount Due:
-                  <span class="font-semibold text-gray-900">{{
+                  <span class="font-semibold text-gray-900 dark:text-white\">{{
                     formatNumber(totalAmount - formData.amountPaid)
                   }}</span>
                 </p>
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700">Notes</label>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Notes</label
+                >
                 <textarea
                   v-model="formData.notes"
-                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 px-3 py-2 border"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border"
                   rows="3"
                   placeholder="Additional notes..."></textarea>
               </div>
@@ -250,7 +273,7 @@
           <button
             @click="createBulkSale"
             :disabled="!canSubmit || loading"
-            class="w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold flex items-center justify-center gap-2">
+            class="w-full px-4 py-3 bg-primary-600 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-700 dark:hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed font-semibold flex items-center justify-center gap-2">
             <span v-if="loading" class="animate-spin">
               <svg
                 class="h-5 w-5"
@@ -276,7 +299,7 @@
           <!-- Error Message -->
           <div
             v-if="error"
-            class="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            class="mt-4 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-200 rounded-lg">
             {{ error }}
           </div>
         </div>

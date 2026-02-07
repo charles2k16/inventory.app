@@ -7,7 +7,7 @@
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 max-h-[calc(100vh-120px)] overflow-y-auto">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center h-64">
         <div
@@ -160,11 +160,11 @@
           </div>
 
           <!-- Top Selling Products -->
-          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col">
             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
               Top Selling Products
             </h3>
-            <div class="flow-root">
+            <div class="flow-root flex-1 overflow-y-auto max-h-64">
               <ul class="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                 <li
                   v-for="item in stats?.topSellingProducts"
@@ -193,11 +193,11 @@
         <!-- Recent Sales and Low Stock -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <!-- Recent Sales -->
-          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col">
             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
               Recent Sales
             </h3>
-            <div class="flow-root">
+            <div class="flow-root flex-1 overflow-y-auto max-h-64">
               <ul class="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                 <li v-for="sale in stats?.recentSales" :key="sale.id" class="py-4">
                   <div class="flex items-center space-x-4">
@@ -230,7 +230,7 @@
           </div>
 
           <!-- Low Stock Alert -->
-          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6">
+          <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-6 flex flex-col">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-lg font-medium text-gray-900 dark:text-white">
                 Low Stock Alert
@@ -240,7 +240,7 @@
                 {{ stats?.overview?.lowStockCount || 0 }} items
               </span>
             </div>
-            <div class="flow-root">
+            <div class="flow-root flex-1 overflow-y-auto max-h-64">
               <ul class="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
                 <li
                   v-for="product in stats?.lowStockProducts"

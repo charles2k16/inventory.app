@@ -6,11 +6,18 @@
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
           Weekly Stock Reports
         </h1>
-        <button
-          @click="createNewReport"
-          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
-          + Create Report
-        </button>
+        <div class="flex gap-3">
+          <NuxtLink
+            to="/stock-records"
+            class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            + Add Stock
+          </NuxtLink>
+          <button
+            @click="createNewReport"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+            + Create Report
+          </button>
+        </div>
       </div>
     </header>
 

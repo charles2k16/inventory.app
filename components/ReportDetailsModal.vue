@@ -178,31 +178,6 @@
               </span>
             </div>
 
-            <!-- Additional Stock Purchased -->
-            <div
-              v-if="fullReport.additionalStock && fullReport.additionalStock.length > 0"
-              class="flex justify-between items-center">
-              <span class="text-gray-700">+ Goods Purchased:</span>
-              <span class="font-semibold text-green-600">
-                GHS {{ formatNumber(fullReport.additionalStockValue) }}
-              </span>
-            </div>
-
-            <!-- Expected Available -->
-            <div
-              class="border-t border-blue-300 pt-3 flex justify-between items-center bg-white p-2 rounded">
-              <span class="font-medium text-gray-900">= Available for Sale:</span>
-              <span class="font-bold text-blue-600">
-                GHS
-                {{
-                  formatNumber(
-                    parseFloat(fullReport.totalValue) +
-                      parseFloat(fullReport.additionalStockValue || 0),
-                  )
-                }}
-              </span>
-            </div>
-
             <!-- Closing Stock (Balance Left) -->
             <div
               v-if="Object.keys(fullReport.closingStock).length > 0"
@@ -222,16 +197,49 @@
                 GHS
                 {{
                   formatNumber(
-                    parseFloat(fullReport.totalValue) +
-                      parseFloat(fullReport.additionalStockValue || 0) -
+                    parseFloat(fullReport.totalValue) -
                       calculateClosingStockValue(fullReport),
                   )
                 }}
               </span>
             </div>
 
+            <!-- Additional Stock Purchased -->
+            <div
+              v-if="fullReport.additionalStock && fullReport.additionalStock.length > 0"
+              class="mt-4 pt-4 border-t border-blue-300 flex justify-between items-center">
+              <span class="text-gray-700">+ Goods Purchased (New Stock):</span>
+              <span class="font-semibold text-green-600">
+                GHS {{ formatNumber(fullReport.additionalStockValue) }}
+              </span>
+            </div>
+
+            <!-- New Opening Stock -->
+            <div
+              v-if="
+                Object.keys(fullReport.closingStock).length > 0 &&
+                fullReport.additionalStock &&
+                fullReport.additionalStock.length > 0
+              "
+              class="border-t border-blue-300 pt-3 flex justify-between items-center bg-purple-50 p-2 rounded">
+              <span class="font-medium text-purple-900"
+                >= New Opening Stock (Next Period):</span
+              >
+              <span class="font-bold text-purple-600">
+                GHS
+                {{
+                  formatNumber(
+                    parseFloat(calculateClosingStockValue(fullReport)) +
+                      parseFloat(fullReport.additionalStockValue || 0),
+                  )
+                }}
+              </span>
+            </div>
+
             <!-- Not Closed Yet -->
-            <div v-else class="text-sm text-amber-700 bg-amber-50 p-2 rounded">
+            <div
+              v-if="Object.keys(fullReport.closingStock).length === 0"
+              class="text-sm text-amber-700 bg-amber-50 p-2 rounded">
               <p>📋 Close the report to see goods sold calculation</p>
             </div>
           </div>

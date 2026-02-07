@@ -54,11 +54,13 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Category *</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Category *</label
+              >
               <select
                 v-model="formData.category"
                 required
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500">
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white">
                 <option value="">Select a category</option>
                 <option value="Equipment">Equipment</option>
                 <option value="Tools">Tools</option>
@@ -68,17 +70,17 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Barcode Number</label
               >
               <input
                 v-model="formData.barcodeNumber"
                 type="text"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Current Stock *</label
               >
               <input
@@ -86,11 +88,11 @@
                 type="number"
                 min="0"
                 required
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Selling Price (GHS) *</label
               >
               <input
@@ -99,11 +101,11 @@
                 step="0.01"
                 min="0"
                 required
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700"
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Cost Price (GHS) *</label
               >
               <input
@@ -112,17 +114,21 @@
                 step="0.01"
                 min="0"
                 required
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
             </div>
 
             <div>
-              <label class="block text-sm font-medium text-gray-700">Reorder Level</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Reorder Level</label
+              >
               <input
                 v-model.number="formData.reorderLevel"
                 type="number"
                 min="0"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500" />
-              <p class="text-xs text-gray-500 mt-1">Default: 10 units</p>
+                class="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm px-3 py-2 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white" />
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Default: 10 units
+              </p>
             </div>
 
             <button
