@@ -399,12 +399,8 @@ const closeCustomerModal = () => {
 
 const openTransactionsModal = async customer => {
   try {
-    const response = await fetch(`${config.public.apiBase}/lenders/${customer.id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get(`/lenders/${customer.id}`);
     selectedCustomer.value = data;
     showTransactionsModal.value = true;
   } catch (error) {
@@ -420,6 +416,7 @@ const closeTransactionsModal = () => {
 const saveCustomer = async () => {
   try {
     customerError.value = '';
+    const { $api } = useNuxtApp();
 
     if (!customerForm.value.name.trim()) {
       customerError.value = 'Customer name is required';
@@ -428,24 +425,10 @@ const saveCustomer = async () => {
 
     customerLoading.value = true;
 
-    const method = editingCustomer.value ? 'PUT' : 'POST';
-    const url = editingCustomer.value
-      ? `${config.public.apiBase}/lenders/${editingCustomer.value.id}`
-      : `${config.public.apiBase}/lenders`;
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(customerForm.value),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      customerError.value = error.message || 'Failed to save customer';
-      return;
+    if (editingCustomer.value) {
+      await $api.put(`/lenders/${editingCustomer.value.id}`, customerForm.value);
+    } else {
+      await $api.post('/lenders', customerForm.value);
     }
 
     await fetchLenders();
@@ -459,12 +442,8 @@ const saveCustomer = async () => {
 
 const fetchLenders = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/lenders?limit=1000`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/lenders', { limit: 1000 });
     lenders.value = data.lenders || [];
 
     // Calculate total debt

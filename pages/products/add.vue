@@ -417,19 +417,9 @@ const addSingleProduct = async () => {
   successMessage.value = '';
 
   try {
-    const response = await fetch(`${config.public.apiBase}/products`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(formData.value),
-    });
+    const { $api } = useNuxtApp();
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to add product');
-    }
+    await $api.post('/products', formData.value);
 
     successMessage.value = 'Product added successfully!';
     formData.value = {
@@ -465,23 +455,12 @@ const importProducts = async () => {
   successMessage.value = '';
 
   try {
-    const formData = new FormData();
-    formData.append('file', selectedFile.value);
+    const { $api } = useNuxtApp();
+    const formDataObj = new FormData();
+    formDataObj.append('file', selectedFile.value);
 
-    const response = await fetch(`${config.public.apiBase}/products/bulk-import`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: formData,
-    });
+    const result = await $api.uploadFile('/products/bulk-import', formDataObj);
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to import products');
-    }
-
-    const result = await response.json();
     successMessage.value = `Successfully imported ${result.count} products!`;
     pageLoading.value = false;
 
@@ -503,17 +482,11 @@ const resetImport = () => {
 
 const downloadTemplate = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/products/import/template`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
+    const { $api } = useNuxtApp();
+    const blob = await $api.request('/products/import/template', {
+      method: 'GET',
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to download template');
-    }
-
-    const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

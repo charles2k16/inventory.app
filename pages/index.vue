@@ -7,7 +7,8 @@
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 max-h-[calc(100vh-120px)] overflow-y-auto">
+    <main
+      class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 max-h-[calc(100vh-120px)] overflow-y-auto">
       <!-- Loading State -->
       <div v-if="loading" class="flex justify-center items-center h-64">
         <div
@@ -338,12 +339,8 @@ const formatDate = (date: string) => {
 
 const fetchDashboardStats = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/dashboard/stats`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    stats.value = await response.json();
+    const { $api } = useNuxtApp();
+    stats.value = await $api.get('/dashboard/stats');
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);
   } finally {
@@ -353,12 +350,8 @@ const fetchDashboardStats = async () => {
 
 const initSalesChart = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/dashboard/sales-chart`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const chartData = await response.json();
+    const { $api } = useNuxtApp();
+    const chartData = await $api.get('/dashboard/sales-chart');
 
     if (salesChart.value) {
       new Chart(salesChart.value, {

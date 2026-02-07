@@ -175,19 +175,12 @@ const calculateSummary = () => {
 const fetchSummaryStats = async () => {
   try {
     loadingStats.value = true;
+    const { $api } = useNuxtApp();
     const { start, end } = getDateRange();
     const startDate = start.toISOString().split('T')[0];
     const endDate = end.toISOString().split('T')[0];
 
-    const response = await fetch(
-      `${config.public.apiBase}/sales/summary?startDate=${startDate}&endDate=${endDate}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    );
-    const data = await response.json();
+    const data = await $api.get('/sales/summary', { startDate, endDate });
 
     summaryStats.value = {
       totalSales: data.totalRevenue || 0,
@@ -220,12 +213,8 @@ watch(filteredSales, () => {
 
 const fetchSales = async () => {
   try {
-    const salesResponse = await fetch(`${config.public.apiBase}/sales`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const salesData = await salesResponse.json();
+    const { $api } = useNuxtApp();
+    const salesData = await $api.get('/sales');
     sales.value = salesData.sales || [];
   } catch (error) {
     console.error('Error fetching sales:', error);

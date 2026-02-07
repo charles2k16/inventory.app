@@ -244,6 +244,7 @@ const uploadFile = async () => {
     successMessage.value = '';
     uploadProgress.value = 0;
 
+    const { $api } = useNuxtApp();
     const formData = new FormData();
     formData.append('file', selectedFile.value);
 
@@ -272,8 +273,9 @@ const uploadFile = async () => {
       uploading.value = false;
     });
 
+    const token = localStorage.getItem('token');
     xhr.open('POST', `${config.public.apiBase}/products/bulk-import`);
-    xhr.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(formData);
   } catch (error) {
     errorMessage.value = error.message || 'Upload failed';
@@ -284,25 +286,19 @@ const uploadFile = async () => {
 const downloadTemplate = async () => {
   try {
     downloadingTemplate.value = true;
-    const response = await fetch(`${config.public.apiBase}/products/import/template`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
+    const { $api } = useNuxtApp();
+    const blob = await $api.request('/products/import/template', {
+      method: 'GET',
     });
 
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'product_import_template.xlsx';
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } else {
-      errorMessage.value = 'Failed to download template';
-    }
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'product_import_template.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   } catch (error) {
     errorMessage.value = 'Failed to download template: ' + error.message;
   } finally {

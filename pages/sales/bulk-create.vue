@@ -371,12 +371,8 @@ const canSubmit = computed(() => {
 
 const fetchProducts = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/products?limit=1000`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/products', { limit: 1000 });
     products.value = data.products || [];
   } catch (err) {
     error.value = 'Failed to load products';
@@ -431,6 +427,7 @@ const createBulkSale = async () => {
   try {
     error.value = '';
     loading.value = true;
+    const { $api } = useNuxtApp();
 
     if (!canSubmit.value) {
       error.value = 'Please fill in all required fields';
@@ -449,25 +446,11 @@ const createBulkSale = async () => {
       notes: formData.value.notes,
     }));
 
-    const response = await fetch(`${config.public.apiBase}/sales/bulk`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({
-        sales: saleData,
-        totalAmount: totalAmount.value,
-      }),
+    await $api.post('/sales/bulk', {
+      sales: saleData,
+      totalAmount: totalAmount.value,
     });
 
-    if (!response.ok) {
-      const data = await response.json();
-      error.value = data.message || 'Failed to create bulk sale';
-      return;
-    }
-
-    // Redirect to sales page
     navigateTo('/sales');
   } catch (err) {
     error.value = err.message || 'Error creating bulk sale';

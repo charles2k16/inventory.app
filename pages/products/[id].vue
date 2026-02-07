@@ -381,18 +381,9 @@ const fetchProduct = async () => {
   try {
     loading.value = true;
     error.value = '';
+    const { $api } = useNuxtApp();
 
-    const response = await fetch(`${config.public.apiBase}/products/${route.params.id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch product details');
-    }
-
-    const data = await response.json();
+    const data = await $api.get(`/products/${route.params.id}`);
     product.value = data;
   } catch (err) {
     error.value = err.message || 'Error loading product details';
@@ -406,37 +397,22 @@ const updateStock = async formData => {
   try {
     updateStockLoading.value = true;
     stockUpdateError.value = '';
+    const { $api } = useNuxtApp();
 
     const stockChange =
       formData.action === 'add' ? formData.quantity : -formData.quantity;
 
-    const response = await fetch(
-      `${config.public.apiBase}/products/${route.params.id}/update-stock`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          stockChange,
-          reason: formData.reason || 'ADJUSTMENT',
-          notes: formData.notes,
-          quantityBefore: product.value.currentStock,
-          quantityAfter:
-            formData.action === 'add'
-              ? product.value.currentStock + formData.quantity
-              : Math.max(0, product.value.currentStock - formData.quantity),
-        }),
-      },
-    );
+    await $api.patch(`/products/${route.params.id}/update-stock`, {
+      stockChange,
+      reason: formData.reason || 'ADJUSTMENT',
+      notes: formData.notes,
+      quantityBefore: product.value.currentStock,
+      quantityAfter:
+        formData.action === 'add'
+          ? product.value.currentStock + formData.quantity
+          : Math.max(0, product.value.currentStock - formData.quantity),
+    });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to update stock');
-    }
-
-    // Reset modal
     showUpdateStockModal.value = false;
 
     // Refresh product data

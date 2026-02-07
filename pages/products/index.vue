@@ -108,12 +108,8 @@ const paginatedProducts = computed(() => {
 
 const fetchProducts = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/products`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/products');
     products.value = data.products || [];
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -136,25 +132,9 @@ const saveProductChanges = async formData => {
   try {
     editError.value = '';
     editLoading.value = true;
+    const { $api } = useNuxtApp();
 
-    const response = await fetch(
-      `${config.public.apiBase}/products/${editingProduct.value.id}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify(formData),
-      },
-    );
-
-    if (!response.ok) {
-      const error = await response.json();
-      editError.value = error.message || 'Failed to update product';
-      return;
-    }
-
+    await $api.put(`/products/${editingProduct.value.id}`, formData);
     await fetchProducts();
     closeEditModal();
   } catch (error) {
@@ -183,33 +163,18 @@ const updateStockQuick = async formData => {
 
     const stockChange =
       formData.action === 'add' ? formData.quantity : -formData.quantity;
+    const { $api } = useNuxtApp();
 
-    const response = await fetch(
-      `${config.public.apiBase}/products/${quickStockProduct.value.id}/update-stock`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          stockChange,
-          reason: formData.reason || 'ADJUSTMENT',
-          notes: formData.notes,
-          quantityBefore: quickStockProduct.value.currentStock,
-          quantityAfter:
-            formData.action === 'add'
-              ? quickStockProduct.value.currentStock + formData.quantity
-              : Math.max(0, quickStockProduct.value.currentStock - formData.quantity),
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      const error = await response.json();
-      quickStockError.value = error.message || 'Failed to update stock';
-      return;
-    }
+    await $api.patch(`/products/${quickStockProduct.value.id}/update-stock`, {
+      stockChange,
+      reason: formData.reason || 'ADJUSTMENT',
+      notes: formData.notes,
+      quantityBefore: quickStockProduct.value.currentStock,
+      quantityAfter:
+        formData.action === 'add'
+          ? quickStockProduct.value.currentStock + formData.quantity
+          : Math.max(0, quickStockProduct.value.currentStock - formData.quantity),
+    });
 
     await fetchProducts();
     closeQuickStockModal();

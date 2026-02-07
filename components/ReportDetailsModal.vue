@@ -316,15 +316,8 @@ const fetchFullReport = async () => {
 
   try {
     loading.value = true;
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports/${props.report.id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    );
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get(`/stock-reports/${props.report.id}`);
     fullReport.value = data;
   } catch (error) {
     console.error('Error fetching report details:', error);

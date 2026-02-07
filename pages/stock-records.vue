@@ -361,12 +361,8 @@ const formatDate = dateStr => {
 
 const fetchProducts = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/products?limit=1000`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/products', { limit: 1000 });
     products.value = data.products || [];
   } catch (err) {
     error.value = 'Failed to load products';
@@ -376,19 +372,15 @@ const fetchProducts = async () => {
 
 const fetchRecentRecords = async () => {
   try {
+    const { $api } = useNuxtApp();
     const today = new Date();
     const weekNumber = getWeekNumber(today);
     const year = today.getFullYear();
 
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports/additional-stock?weekNumber=${weekNumber}&year=${year}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    );
-    const data = await response.json();
+    const data = await $api.get('/stock-reports/additional-stock', {
+      weekNumber,
+      year,
+    });
     recentRecords.value = data.additionalStock || [];
   } catch (err) {
     console.error('Failed to load recent records:', err);
@@ -407,6 +399,7 @@ const submitForm = async () => {
   try {
     error.value = '';
     loading.value = true;
+    const { $api } = useNuxtApp();
 
     if (
       !formData.value.productId ||
@@ -417,33 +410,16 @@ const submitForm = async () => {
       return;
     }
 
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports/additional-stock/record`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          productId: formData.value.productId,
-          quantity: formData.value.quantity,
-          costPerUnit: formData.value.costPerUnit,
-          supplier: formData.value.supplier || null,
-          invoiceNumber: formData.value.invoiceNumber || null,
-          purchaseDate: formData.value.purchaseDate,
-          notes: formData.value.notes || null,
-        }),
-      },
-    );
+    await $api.post('/stock-reports/additional-stock/record', {
+      productId: formData.value.productId,
+      quantity: formData.value.quantity,
+      costPerUnit: formData.value.costPerUnit,
+      supplier: formData.value.supplier || null,
+      invoiceNumber: formData.value.invoiceNumber || null,
+      purchaseDate: formData.value.purchaseDate,
+      notes: formData.value.notes || null,
+    });
 
-    if (!response.ok) {
-      const data = await response.json();
-      error.value = data.message || 'Failed to record stock';
-      return;
-    }
-
-    // Reset form
     formData.value = {
       productId: '',
       productSearch: '',
@@ -455,7 +431,6 @@ const submitForm = async () => {
       notes: '',
     };
 
-    // Refresh records
     await fetchRecentRecords();
     await fetchProducts();
   } catch (err) {
@@ -469,21 +444,9 @@ const deleteRecord = async recordId => {
   if (!confirm('Are you sure you want to delete this stock record?')) return;
 
   try {
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports/additional-stock/${recordId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    );
+    const { $api } = useNuxtApp();
 
-    if (!response.ok) {
-      error.value = 'Failed to delete record';
-      return;
-    }
-
+    await $api.delete(`/stock-reports/additional-stock/${recordId}`);
     await fetchRecentRecords();
     await fetchProducts();
   } catch (err) {

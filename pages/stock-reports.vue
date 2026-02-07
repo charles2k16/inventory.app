@@ -257,15 +257,11 @@ const calculateClosingStockValue = report => {
 
 const fetchReports = async () => {
   try {
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports?page=${currentPage.value}&limit=${limit}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    );
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/stock-reports', {
+      page: currentPage.value,
+      limit,
+    });
     reports.value = data.reports || [];
     pagination.value = data.pagination || {};
   } catch (error) {
@@ -275,12 +271,8 @@ const fetchReports = async () => {
 
 const fetchCurrentReport = async () => {
   try {
-    const response = await fetch(`${config.public.apiBase}/stock-reports/current`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/stock-reports/current');
     currentReport.value = data;
   } catch (error) {
     console.error('Error fetching current report:', error);
@@ -289,6 +281,7 @@ const fetchCurrentReport = async () => {
 
 const createNewReport = async () => {
   try {
+    const { $api } = useNuxtApp();
     const startOfWeek = new Date();
     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
@@ -297,22 +290,13 @@ const createNewReport = async () => {
     endOfWeek.setDate(startOfWeek.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    const response = await fetch(`${config.public.apiBase}/stock-reports`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify({
-        startDate: startOfWeek.toISOString(),
-        endDate: endOfWeek.toISOString(),
-      }),
+    await $api.post('/stock-reports', {
+      startDate: startOfWeek.toISOString(),
+      endDate: endOfWeek.toISOString(),
     });
 
-    if (response.ok) {
-      await fetchCurrentReport();
-      await fetchReports();
-    }
+    await fetchCurrentReport();
+    await fetchReports();
   } catch (error) {
     console.error('Error creating report:', error);
   }
@@ -321,22 +305,11 @@ const createNewReport = async () => {
 const closeCurrentReport = async () => {
   try {
     closingLoading.value = true;
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports/${currentReport.value.id}/close`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({}),
-      },
-    );
+    const { $api } = useNuxtApp();
 
-    if (response.ok) {
-      await fetchCurrentReport();
-      await fetchReports();
-    }
+    await $api.patch(`/stock-reports/${currentReport.value.id}/close`, {});
+    await fetchCurrentReport();
+    await fetchReports();
   } catch (error) {
     console.error('Error closing report:', error);
   } finally {
@@ -346,15 +319,8 @@ const closeCurrentReport = async () => {
 
 const viewVariance = async report => {
   try {
-    const response = await fetch(
-      `${config.public.apiBase}/stock-reports/${report.id}/variance`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      },
-    );
-    const data = await response.json();
+    const { $api } = useNuxtApp();
+    const data = await $api.get(`/stock-reports/${report.id}/variance`);
     varianceData.value = data;
   } catch (error) {
     console.error('Error fetching variance:', error);

@@ -1,110 +1,43 @@
+/**
+ * Composable for API calls
+ * Uses the global apiClient for automatic header/auth handling
+ */
 export const useApi = () => {
-  const config = useRuntimeConfig();
-  
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
-    return {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-  };
-
-  const handleResponse = async (response: Response) => {
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Request failed');
-    }
-    return response.json();
-  };
+  const { $api } = useNuxtApp();
 
   return {
     // Products
-    async getProducts(params = {}) {
-      const query = new URLSearchParams(params).toString();
-      const response = await fetch(
-        `${config.public.apiBase}/products?${query}`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    },
-
-    async getProduct(id: string) {
-      const response = await fetch(
-        `${config.public.apiBase}/products/${id}`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    },
-
-    async createProduct(data: any) {
-      const response = await fetch(
-        `${config.public.apiBase}/products`,
-        {
-          method: 'POST',
-          headers: getAuthHeaders(),
-          body: JSON.stringify(data)
-        }
-      );
-      return handleResponse(response);
-    },
+    getProducts: ( params = {} ) => $api.get( '/products', params ),
+    getProduct: ( id: string ) => $api.get( `/products/${ id }` ),
+    createProduct: ( data: any ) => $api.post( '/products', data ),
+    updateProduct: ( id: string, data: any ) => $api.put( `/products/${ id }`, data ),
+    deleteProduct: ( id: string ) => $api.delete( `/products/${ id }` ),
 
     // Sales
-    async getSales(params = {}) {
-      const query = new URLSearchParams(params).toString();
-      const response = await fetch(
-        `${config.public.apiBase}/sales?${query}`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    },
-
-    async createSale(data: any) {
-      const response = await fetch(
-        `${config.public.apiBase}/sales`,
-        {
-          method: 'POST',
-          headers: getAuthHeaders(),
-          body: JSON.stringify(data)
-        }
-      );
-      return handleResponse(response);
-    },
+    getSales: ( params = {} ) => $api.get( '/sales', params ),
+    getSale: ( id: string ) => $api.get( `/sales/${ id }` ),
+    createSale: ( data: any ) => $api.post( '/sales', data ),
+    updateSale: ( id: string, data: any ) => $api.put( `/sales/${ id }`, data ),
 
     // Dashboard
-    async getDashboardStats() {
-      const response = await fetch(
-        `${config.public.apiBase}/dashboard/stats`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    },
-
-    async getSalesChart(period = 'week') {
-      const response = await fetch(
-        `${config.public.apiBase}/dashboard/sales-chart?period=${period}`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    },
+    getDashboardStats: () => $api.get( '/dashboard/stats' ),
+    getSalesChart: ( period = 'week' ) => $api.get( '/dashboard/sales-chart', { period } ),
 
     // Lenders
-    async getLenders(params = {}) {
-      const query = new URLSearchParams(params).toString();
-      const response = await fetch(
-        `${config.public.apiBase}/lenders?${query}`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    },
+    getLenders: ( params = {} ) => $api.get( '/lenders', params ),
+    createLender: ( data: any ) => $api.post( '/lenders', data ),
+    updateLender: ( id: string, data: any ) => $api.put( `/lenders/${ id }`, data ),
 
     // Stock Reports
-    async getStockReports(params = {}) {
-      const query = new URLSearchParams(params).toString();
-      const response = await fetch(
-        `${config.public.apiBase}/stock-reports?${query}`,
-        { headers: getAuthHeaders() }
-      );
-      return handleResponse(response);
-    }
+    getStockReports: ( params = {} ) => $api.get( '/stock-reports', params ),
+    getStockReport: ( id: string ) => $api.get( `/stock-reports/${ id }` ),
+    createStockReport: ( data: any ) => $api.post( '/stock-reports', data ),
+
+    // Returns
+    getReturns: ( params = {} ) => $api.get( '/returns', params ),
+    createReturn: ( data: any ) => $api.post( '/returns', data ),
+
+    // File uploads
+    uploadFile: ( endpoint: string, formData: FormData ) => $api.uploadFile( endpoint, formData ),
   };
 };
