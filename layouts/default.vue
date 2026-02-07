@@ -47,6 +47,12 @@
                 active-class="border-primary-500 text-gray-900 dark:text-white">
                 Reports
               </NuxtLink>
+              <NuxtLink
+                to="/activity-logs"
+                class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                active-class="border-primary-500 text-gray-900 dark:text-white">
+                Activity
+              </NuxtLink>
             </div>
           </div>
           <div class="flex items-center gap-3">

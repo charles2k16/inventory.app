@@ -161,19 +161,16 @@ const updateStockQuick = async formData => {
     quickStockError.value = '';
     quickStockLoading.value = true;
 
-    const stockChange =
-      formData.action === 'add' ? formData.quantity : -formData.quantity;
+    // Determine type (IN for add, OUT for remove)
+    const type = formData.action === 'add' ? 'IN' : 'OUT';
+    const quantity = formData.quantity;
     const { $api } = useNuxtApp();
 
     await $api.patch(`/products/${quickStockProduct.value.id}/update-stock`, {
-      stockChange,
+      type,
+      quantity,
       reason: formData.reason || 'ADJUSTMENT',
       notes: formData.notes,
-      quantityBefore: quickStockProduct.value.currentStock,
-      quantityAfter:
-        formData.action === 'add'
-          ? quickStockProduct.value.currentStock + formData.quantity
-          : Math.max(0, quickStockProduct.value.currentStock - formData.quantity),
     });
 
     await fetchProducts();

@@ -407,18 +407,15 @@ const updateStock = async formData => {
     stockUpdateError.value = '';
     const { $api } = useNuxtApp();
 
-    const stockChange =
-      formData.action === 'add' ? formData.quantity : -formData.quantity;
+    // Determine type (IN for add, OUT for remove)
+    const type = formData.action === 'add' ? 'IN' : 'OUT';
+    const quantity = formData.quantity;
 
     await $api.patch(`/products/${route.params.id}/update-stock`, {
-      stockChange,
+      type,
+      quantity,
       reason: formData.reason || 'ADJUSTMENT',
       notes: formData.notes,
-      quantityBefore: product.value.currentStock,
-      quantityAfter:
-        formData.action === 'add'
-          ? product.value.currentStock + formData.quantity
-          : Math.max(0, product.value.currentStock - formData.quantity),
     });
 
     showUpdateStockModal.value = false;
