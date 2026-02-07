@@ -162,7 +162,12 @@ const calculateSummary = () => {
   summaryStats.value = {
     totalSales: filtered.reduce((sum, sale) => sum + (sale.totalAmount || 0), 0),
     salesCount: filtered.length,
-    totalItems: filtered.reduce((sum, sale) => sum + (sale.items?.length || 0), 0),
+    totalItems: filtered.reduce(
+      (sum, sale) =>
+        sum +
+        (sale.items?.reduce((itemSum, item) => itemSum + (item.quantity || 0), 0) || 0),
+      0,
+    ),
     pendingAmount: filtered
       .filter(s => s.paymentStatus === 'UNPAID' || s.paymentStatus === 'PARTIAL')
       .reduce((sum, sale) => sum + (sale.amountDue || 0), 0),
@@ -185,10 +190,7 @@ const fetchSummaryStats = async () => {
     summaryStats.value = {
       totalSales: data.totalRevenue || 0,
       salesCount: data.totalSales || 0,
-      totalItems: filteredSales.value.reduce(
-        (sum, sale) => sum + (sale.items?.length || 0),
-        0,
-      ),
+      totalItems: data.totalItems || 0,
       pendingAmount: data.pendingPayments || 0,
       pendingCount: filteredSales.value.filter(
         s => s.paymentStatus === 'UNPAID' || s.paymentStatus === 'PARTIAL',

@@ -173,12 +173,16 @@
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                 >Cost Price</label
               >
-              <p class="mt-1 text-gray-900">GHS {{ formatNumber(product.costPrice) }}</p>
+              <p class="mt-1 text-gray-900 dark:text-gray-300">
+                GHS {{ formatNumber(product.costPrice) }}
+              </p>
             </div>
 
             <div class="pt-4 border-t border-gray-200">
-              <label class="block text-sm font-medium text-gray-700">Stock Value</label>
-              <p class="mt-1 text-lg font-semibold text-gray-900">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >Stock Value</label
+              >
+              <p class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-300">
                 GHS {{ formatNumber(product.currentStock * product.sellingPrice) }}
               </p>
             </div>
@@ -316,7 +320,11 @@
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {{ movement.createdBy || '-' }}
+                    {{
+                      movement.createdByUser
+                        ? `${movement.createdByUser.firstName} ${movement.createdByUser.lastName}`
+                        : '-'
+                    }}
                   </td>
                 </tr>
               </tbody>
