@@ -8,7 +8,9 @@
 </template>
 
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   size: {
     type: String,
     default: 'md' // sm, md, lg
@@ -20,9 +22,8 @@ defineProps({
 });
 
 const spinnerClass = computed(() => {
-  const size = props.size;
-  if (size === 'sm') return 'h-6 w-6 border-primary-600';
-  if (size === 'lg') return 'h-16 w-16 border-primary-600';
+  if (props.size === 'sm') return 'h-6 w-6 border-primary-600';
+  if (props.size === 'lg') return 'h-16 w-16 border-primary-600';
   return 'h-12 w-12 border-primary-600';
 });
 </script>

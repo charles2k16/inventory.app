@@ -236,12 +236,12 @@
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useApi } from '~/composables/useApi';
+import { useNuxtApp } from '#app';
 import StatCard from '~/components/StatCard.vue';
 import EmptyState from '~/components/EmptyState.vue';
 import LoadingSpinner from '~/components/LoadingSpinner.vue';
 
-const { $api } = useApi();
+const { $api } = useNuxtApp();
 
 const loading = ref(false);
 const activities = ref([]);
@@ -291,11 +291,18 @@ const fetchActivities = async () => {
       ...(filters.value.endDate && { endDate: filters.value.endDate }),
     });
 
-    const response = await $api.get(`/activity/log?${params}`);
-    activities.value = response.activities;
+    const url = `/activity/log?${params}`;
+    console.log('📡 Fetching activities from:', url);
+    console.log('API instance:', $api);
+
+    const response = await $api.get(url);
+    console.log('✅ Activities response:', response);
+
+    activities.value = response.activities || [];
     pagination.value = response.pagination;
   } catch (error) {
-    console.error('Failed to fetch activities:', error);
+    console.error('❌ Failed to fetch activities:', error);
+    console.error('Error details:', error.message, error.response?.data);
   } finally {
     loading.value = false;
   }
@@ -308,20 +315,35 @@ const fetchSummary = async () => {
       ...(filters.value.endDate && { endDate: filters.value.endDate }),
     });
 
-    const response = await $api.get(`/activity/summary?${params}`);
-    summary.value = response;
+    const url = `/activity/summary?${params}`;
+    console.log('📡 Fetching summary from:', url);
+
+    const response = await $api.get(url);
+    console.log('✅ Summary response:', response);
+
+    // The API returns { summary: {...}, byAction: [...], byResourceType: [...], topUsers: [...] }
+    // We need to merge it so summary contains all the data
+    summary.value = {
+      totalActivities: response.summary.totalActivities,
+      byAction: response.byAction,
+      byResourceType: response.byResourceType,
+      topUsers: response.topUsers,
+    };
   } catch (error) {
-    console.error('Failed to fetch summary:', error);
+    console.error('❌ Failed to fetch summary:', error);
   }
 };
 
 const fetchActivityTypes = async () => {
   try {
+    console.log('📡 Fetching activity types...');
     const response = await $api.get('/activity/types');
-    availableActions.value = response.actions;
-    availableResourceTypes.value = response.resourceTypes;
+    console.log('✅ Activity types response:', response);
+
+    availableActions.value = response.actions || [];
+    availableResourceTypes.value = response.resourceTypes || [];
   } catch (error) {
-    console.error('Failed to fetch activity types:', error);
+    console.error('❌ Failed to fetch activity types:', error);
   }
 };
 
@@ -345,6 +367,8 @@ const changePage = newPage => {
 };
 
 onMounted(() => {
+  console.log('🎯 Activity Logs page mounted');
+  console.log('useApi $api:', $api);
   fetchActivities();
   fetchSummary();
   fetchActivityTypes();
