@@ -195,6 +195,25 @@
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >Select Lender (Optional)</label
+                >
+                <select
+                  v-model="selectedLenderId"
+                  @change="handleLenderSelection"
+                  class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
+                  <option value="">-- Select a Lender --</option>
+                  <option v-for="lender in lenders" :key="lender.id" :value="lender.id">
+                    {{ lender.firstName }} {{ lender.lastName }}
+                  </option>
+                </select>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Select a lender to auto-populate the customer name, or enter a name
+                  manually below.
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300"
                   >Customer Name</label
                 >
                 <input
@@ -309,18 +328,22 @@
 </template>
 
 <script setup>
+import { ref, computed, watch, onMounted } from 'vue';
 const config = useRuntimeConfig();
 const router = useRouter();
 
 const products = ref([]);
+const lenders = ref([]);
 const saleItems = ref([]);
 const selectedProductId = ref('');
+const selectedLenderId = ref('');
 const productSearch = ref('');
 const addingProduct = ref(false);
 const loading = ref(false);
 const error = ref('');
 
 const formData = ref({
+  customerId: null,
   customerName: '',
   paymentMethod: 'CASH',
   paymentStatus: 'PAID',
@@ -369,6 +392,13 @@ const canSubmit = computed(() => {
   );
 });
 
+// Watch totalAmount to update amountPaid default
+watch(totalAmount, newTotal => {
+  if (formData.value.amountPaid === 0) {
+    formData.value.amountPaid = newTotal;
+  }
+});
+
 const fetchProducts = async () => {
   try {
     const { $api } = useNuxtApp();
@@ -377,6 +407,29 @@ const fetchProducts = async () => {
   } catch (err) {
     error.value = 'Failed to load products';
     console.error(err);
+  }
+};
+
+const fetchLenders = async () => {
+  try {
+    const { $api } = useNuxtApp();
+    const data = await $api.get('/lenders');
+    lenders.value = data.lenders || [];
+  } catch (err) {
+    console.error('Failed to load lenders:', err);
+  }
+};
+
+const handleLenderSelection = () => {
+  if (selectedLenderId.value) {
+    const lender = lenders.value.find(l => l.id === selectedLenderId.value);
+    if (lender) {
+      formData.value.customerId = lender.id;
+      formData.value.customerName = `${lender.firstName} ${lender.lastName}`.trim();
+    }
+  } else {
+    formData.value.customerId = null;
+    formData.value.customerName = '';
   }
 };
 
@@ -461,5 +514,6 @@ const createBulkSale = async () => {
 
 onMounted(() => {
   fetchProducts();
+  fetchLenders();
 });
 </script>
