@@ -53,6 +53,13 @@
                 active-class="border-primary-500 text-gray-900 dark:text-white">
                 Activity
               </NuxtLink>
+              <a
+                href="/pos"
+                target="_blank"
+                rel="noopener"
+                class="border-transparent text-emerald-600 dark:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-600 hover:text-emerald-700 dark:hover:text-emerald-300 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                POS
+              </a>
             </div>
           </div>
           <div class="flex items-center gap-3">
