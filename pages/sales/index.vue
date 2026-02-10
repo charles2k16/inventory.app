@@ -10,11 +10,11 @@
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
             + Bulk Sale
           </NuxtLink>
-          <button
+          <!-- <button
             @click="showNewSaleModal = true"
             class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
             + New Sale
-          </button>
+          </button> -->
         </div>
       </div>
     </header>
@@ -82,7 +82,6 @@
 
 <script setup>
 const config = useRuntimeConfig();
-const showNewSaleModal = ref(false);
 const sales = ref([]);
 const search = ref('');
 const paymentStatus = ref('');

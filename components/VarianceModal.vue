@@ -18,112 +18,46 @@
 
       <div class="p-6 space-y-6">
         <!-- Variance Summary -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div
             class="p-4 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
             <label class="text-sm font-medium text-gray-700 dark:text-blue-200"
-              >Total Opening Stock</label
+              >Opening Stock Value</label
             >
             <p class="text-2xl font-bold text-blue-600 dark:text-blue-300 mt-1">
-              GHS {{ formatNumber(variance.openingTotal) }}
+              GHS {{ formatNumber(variance.openingStockValue) }}
             </p>
           </div>
+
           <div
             class="p-4 bg-green-50 dark:bg-green-900 rounded-lg border border-green-200 dark:border-green-700">
             <label class="text-sm font-medium text-gray-700 dark:text-green-200"
-              >Total Closing Stock</label
+              >Closing Stock Value</label
             >
             <p class="text-2xl font-bold text-green-600 dark:text-green-300 mt-1">
-              GHS {{ formatNumber(variance.closingTotal) }}
+              GHS {{ formatNumber(variance.closingStockValue) }}
             </p>
           </div>
-        </div>
 
-        <!-- Variance by Product -->
-        <div>
-          <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
-            Variance by Product
-          </h4>
-          <div class="border dark:border-gray-700 rounded-lg overflow-hidden">
-            <table
-              class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-800">
-              <thead class="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                    Product
-                  </th>
-                  <th
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                    Opening Qty
-                  </th>
-                  <th
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                    Closing Qty
-                  </th>
-                  <th
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                    Qty Variance
-                  </th>
-                  <th
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                    Cost Price
-                  </th>
-                  <th
-                    class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                    Value Variance
-                  </th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-                <tr
-                  v-for="item in variance.products"
-                  :key="item.productId"
-                  class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td class="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
-                    {{ item.productName }}
-                  </td>
-                  <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                    {{ item.openingQty }}
-                  </td>
-                  <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                    {{ item.closingQty }}
-                  </td>
-                  <td
-                    class="px-4 py-3 text-sm font-semibold"
-                    :class="getVarianceClass(item.qtyVariance)">
-                    {{ item.qtyVariance }}
-                  </td>
-                  <td class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-                    GHS {{ formatNumber(item.costPrice) }}
-                  </td>
-                  <td
-                    class="px-4 py-3 text-sm font-semibold"
-                    :class="getVarianceClass(item.valueVariance)">
-                    GHS {{ formatNumber(item.valueVariance) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div
+            class="p-4 bg-red-50 dark:bg-red-900 rounded-lg border border-red-200 dark:border-red-700">
+            <label class="text-sm font-medium text-gray-700 dark:text-red-200"
+              >Goods Sold (Cost Value)</label
+            >
+            <p class="text-2xl font-bold text-red-600 dark:text-red-300 mt-1">
+              GHS {{ formatNumber(variance.goodsSoldValue) }}
+            </p>
           </div>
-        </div>
 
-        <!-- Discrepancy Alert -->
-        <div
-          v-if="variance.totalVariance !== 0"
-          class="p-4 bg-red-50 dark:bg-red-900 rounded-lg border border-red-200 dark:border-red-700">
-          <p class="text-sm font-medium text-red-900 dark:text-red-200 mb-1">
-            ⚠️ Variance Detected
-          </p>
-          <p class="text-sm text-red-700 dark:text-red-300">
-            Total variance of GHS {{ formatNumber(Math.abs(variance.totalVariance)) }} ({{
-              variance.totalVariance > 0 ? 'surplus' : 'shortfall'
-            }})
-          </p>
-        </div>
-        <div v-else class="p-4 bg-green-50 rounded-lg border border-green-200">
-          <p class="text-sm font-medium text-green-900">✓ No Variance</p>
-          <p class="text-sm text-green-700">Closing stock matches expected values</p>
+          <div
+            class="p-4 bg-purple-50 dark:bg-purple-900 rounded-lg border border-purple-200 dark:border-purple-700">
+            <label class="text-sm font-medium text-gray-700 dark:text-purple-200"
+              >Additional Stock Value</label
+            >
+            <p class="text-2xl font-bold text-purple-600 dark:text-purple-300 mt-1">
+              GHS {{ formatNumber(variance.additionalStockValue) }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -145,11 +79,5 @@ const formatNumber = num => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(num || 0);
-};
-
-const getVarianceClass = value => {
-  if (value === 0) return 'text-gray-900';
-  if (value > 0) return 'text-green-600';
-  return 'text-red-600';
 };
 </script>
