@@ -75,6 +75,15 @@
           :sales="filteredSales"
           @view="viewSale"
           @update-payment="openPaymentModal" />
+
+        <ProductPagination
+        
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          :start-index="startIndex"
+          :end-index="endIndex"
+          :total-items="totalItems"
+          @update:page="currentPage = $event" />
       </div>
 
       <!-- Update Payment Modal -->
@@ -177,6 +186,9 @@ const search = ref('');
 const paymentStatus = ref('');
 const dateRange = ref('today');
 const loadingStats = ref(false);
+const currentPage = ref(1);
+const limit = 50;
+const pagination = ref({ total: 0, pages: 1 });
 
 const summaryStats = ref({
   totalSales: 0,
@@ -226,12 +238,22 @@ const getDateRange = () => {
   }
 };
 
-const filteredSales = computed(() => {
-  const { start, end } = getDateRange();
+const totalPages = computed(() => pagination.value.pages || 1);
 
+const startIndex = computed(() => {
+  if (!pagination.value.total) return 0;
+  return (currentPage.value - 1) * limit;
+});
+
+const endIndex = computed(() => {
+  if (!pagination.value.total) return 0;
+  return Math.min(currentPage.value * limit, pagination.value.total);
+});
+
+const totalItems = computed(() => pagination.value.total || 0);
+
+const filteredSales = computed(() => {
   return sales.value.filter(sale => {
-    const saleDate = new Date(sale.createdAt);
-    const matchesDate = saleDate >= start && saleDate < end;
     const matchesSearch =
       !search.value ||
       (sale.lenderName &&
@@ -241,7 +263,7 @@ const filteredSales = computed(() => {
     const matchesPayment =
       !paymentStatus.value || sale.paymentStatus === paymentStatus.value;
 
-    return matchesDate && matchesSearch && matchesPayment;
+    return matchesSearch && matchesPayment;
   });
 });
 
@@ -305,8 +327,28 @@ watch(filteredSales, () => {
 const fetchSales = async () => {
   try {
     const { $api } = useNuxtApp();
-    const salesData = await $api.get('/sales');
+    const { start, end } = getDateRange();
+    const startDate = start.toISOString().split('T')[0];
+    const endDate = end.toISOString().split('T')[0];
+
+    const params = {
+      startDate,
+      endDate,
+      page: currentPage.value,
+      limit,
+    };
+
+    // Optionally filter by payment status on the backend as well
+    if (paymentStatus.value) {
+      params.status = paymentStatus.value;
+    }
+
+    const salesData = await $api.get('/sales', params);
     sales.value = salesData.sales || [];
+    pagination.value = salesData.pagination || {
+      total: sales.value.length,
+      pages: 1,
+    };
   } catch (error) {
     console.error('Error fetching sales:', error);
   }
@@ -388,6 +430,10 @@ const submitPaymentUpdate = async () => {
     paymentLoading.value = false;
   }
 };
+
+watch(currentPage, () => {
+  fetchSales();
+});
 
 onMounted(() => {
   fetchSales();
