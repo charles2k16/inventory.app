@@ -203,7 +203,7 @@
                   class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
                   <option value="">-- Select a Lender --</option>
                   <option v-for="lender in lenders" :key="lender.id" :value="lender.id">
-                    {{ lender.firstName }} {{ lender.lastName }}
+                    {{ lender.name }}
                   </option>
                 </select>
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -425,7 +425,7 @@ const handleLenderSelection = () => {
     const lender = lenders.value.find(l => l.id === selectedLenderId.value);
     if (lender) {
       formData.value.customerId = lender.id;
-      formData.value.customerName = `${lender.firstName} ${lender.lastName}`.trim();
+      formData.value.customerName = `${lender.name}`.trim();
     }
   } else {
     formData.value.customerId = null;
@@ -491,7 +491,7 @@ const createBulkSale = async () => {
       productId: item.productId,
       quantity: item.quantity,
       unitPrice: item.unitPrice,
-      customerId: null,
+      customerId: formData.value.customerId,
       customerName: formData.value.customerName,
       paymentMethod: formData.value.paymentMethod,
       paymentStatus: formData.value.paymentStatus,
