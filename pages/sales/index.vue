@@ -77,7 +77,6 @@
           @update-payment="openPaymentModal" />
 
         <ProductPagination
-        
           :current-page="currentPage"
           :total-pages="totalPages"
           :start-index="startIndex"
