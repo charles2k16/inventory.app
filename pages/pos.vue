@@ -101,6 +101,31 @@
             </div>
 
             <div class="mb-4">
+              <label class="block text-slate-400 text-xs mb-1">Customer / Lender (optional)</label>
+              <select
+                v-model="selectedLenderId"
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="">Walk-in customer</option>
+                <option v-for="l in lenders" :key="l.id" :value="l.id">
+                  {{ l.name }}
+                </option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-slate-400 text-xs mb-1">Payment Status</label>
+              <select
+                v-model="paymentStatus"
+                class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value="PAID">Paid</option>
+                <option value="UNPAID">Unpaid</option>
+              </select>
+              <p v-if="paymentStatus === 'UNPAID'" class="text-amber-400 text-xs mt-1">
+                Unpaid sales require a lender. Select a customer above.
+              </p>
+            </div>
+
+            <div class="mb-4">
               <label class="block text-slate-400 text-xs mb-1">Payment Method</label>
               <select
                 v-model="paymentMethod"
@@ -111,8 +136,12 @@
               </select>
             </div>
 
+            <div v-if="saleError" class="mb-4 text-amber-400 text-sm">
+              {{ saleError }}
+            </div>
+
             <button
-              :disabled="cart.length === 0 || completing"
+              :disabled="!canCompleteSale || completing"
               class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
               @click="completeSale">
               {{ completing ? 'Processing...' : 'Complete Sale' }}
@@ -172,10 +201,14 @@ definePageMeta({
 
 const { $api } = useNuxtApp();
 const products = ref([]);
+const lenders = ref([]);
 const productSearch = ref('');
 const cart = ref([]);
+const selectedLenderId = ref('');
+const paymentStatus = ref('PAID');
 const paymentMethod = ref('CASH');
 const completing = ref(false);
+const saleError = ref('');
 const isAuthenticated = ref(false);
 const showCompleteModal = ref(false);
 const completedSale = ref(null);
@@ -208,6 +241,24 @@ const filteredProducts = computed(() => {
 
 const cartTotal = computed(() => {
   return cart.value.reduce((s, i) => s + i.quantity * Number(i.unitPrice), 0);
+});
+
+const customerName = computed(() => {
+  if (selectedLenderId.value) {
+    const l = lenders.value.find((x) => x.id === selectedLenderId.value);
+    return l?.name || 'Customer';
+  }
+  return 'Walk-in Customer';
+});
+
+const amountPaid = computed(() =>
+  paymentStatus.value === 'PAID' ? cartTotal.value : 0
+);
+
+const canCompleteSale = computed(() => {
+  if (cart.value.length === 0) return false;
+  if (paymentStatus.value === 'UNPAID' && !selectedLenderId.value) return false;
+  return true;
 });
 
 const formatPrice = (n) => {
@@ -254,20 +305,34 @@ const removeFromCart = (idx) => {
 };
 
 const completeSale = async () => {
-  if (cart.value.length === 0) return;
+  if (!canCompleteSale.value) {
+    saleError.value =
+      paymentStatus.value === 'UNPAID' && !selectedLenderId.value
+        ? 'Select a lender for unpaid sales'
+        : 'Add items to cart';
+    return;
+  }
+  saleError.value = '';
   completing.value = true;
   try {
-    const saleData = cart.value.map((i) => ({
-      productId: i.productId,
-      quantity: i.quantity,
-      unitPrice: i.unitPrice,
-      customerId: null,
-      customerName: 'Walk-in Customer',
-      paymentMethod: paymentMethod.value,
-      paymentStatus: 'PAID',
-      amountPaid: cartTotal.value,
-      notes: 'POS Sale',
-    }));
+    const total = cartTotal.value;
+    const paid = amountPaid.value;
+    const saleData = cart.value.map((i) => {
+      const itemTotal = i.quantity * Number(i.unitPrice);
+      const itemAmountPaid =
+        total > 0 ? (itemTotal / total) * paid : 0;
+      return {
+        productId: i.productId,
+        quantity: i.quantity,
+        unitPrice: i.unitPrice,
+        customerId: selectedLenderId.value || null,
+        customerName: customerName.value,
+        paymentMethod: paymentMethod.value,
+        paymentStatus: paymentStatus.value,
+        amountPaid: Math.round(itemAmountPaid * 100) / 100,
+        notes: 'POS Sale',
+      };
+    });
 
     const res = await $api.post('/sales/bulk', {
       sales: saleData,
@@ -296,6 +361,7 @@ const closeCompleteModal = () => {
   completedSale.value = null;
   completedSaleItems.value = [];
   completedTotal.value = 0;
+  saleError.value = '';
 };
 
 const fetchProducts = async () => {
@@ -307,9 +373,21 @@ const fetchProducts = async () => {
   }
 };
 
+const fetchLenders = async () => {
+  try {
+    const data = await $api.get('/lenders', { limit: 200 });
+    lenders.value = data.lenders || [];
+  } catch (err) {
+    console.error('Failed to load lenders:', err);
+  }
+};
+
 onMounted(() => {
   const token = localStorage.getItem('token');
   isAuthenticated.value = !!token;
-  if (token) fetchProducts();
+  if (token) {
+    fetchProducts();
+    fetchLenders();
+  }
 });
 </script>

@@ -57,7 +57,7 @@
 </template>
 
 <script setup>
-const config = useRuntimeConfig();
+ const { $api } = useNuxtApp();
 const products = ref([]);
 const search = ref('');
 const selectedCategory = ref('');
@@ -108,7 +108,6 @@ const paginatedProducts = computed(() => {
 
 const fetchProducts = async () => {
   try {
-    const { $api } = useNuxtApp();
     const data = await $api.get('/products');
     products.value = data.products || [];
   } catch (error) {
@@ -132,7 +131,6 @@ const saveProductChanges = async formData => {
   try {
     editError.value = '';
     editLoading.value = true;
-    const { $api } = useNuxtApp();
 
     await $api.put(`/products/${editingProduct.value.id}`, formData);
     await fetchProducts();
@@ -164,7 +162,6 @@ const updateStockQuick = async formData => {
     // Determine type (IN for add, OUT for remove)
     const type = formData.action === 'add' ? 'IN' : 'OUT';
     const quantity = formData.quantity;
-    const { $api } = useNuxtApp();
 
     await $api.patch(`/products/${quickStockProduct.value.id}/update-stock`, {
       type,

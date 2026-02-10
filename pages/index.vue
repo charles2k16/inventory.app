@@ -272,10 +272,10 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useRuntimeConfig } from 'nuxt/app';
 import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
+const { $api } = useNuxtApp();
 
 interface DashboardStats {
   overview?: {
@@ -316,7 +316,6 @@ interface DashboardStats {
   }>;
 }
 
-const config = useRuntimeConfig();
 const stats = ref<DashboardStats | null>(null);
 const loading = ref(true);
 const salesChart = ref<HTMLCanvasElement | null>(null);
@@ -339,7 +338,6 @@ const formatDate = (date: string) => {
 
 const fetchDashboardStats = async () => {
   try {
-    const { $api } = useNuxtApp();
     stats.value = await $api.get('/dashboard/stats');
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);
@@ -350,7 +348,6 @@ const fetchDashboardStats = async () => {
 
 const initSalesChart = async () => {
   try {
-    const { $api } = useNuxtApp();
     const chartData = await $api.get('/dashboard/sales-chart');
 
     if (salesChart.value) {
