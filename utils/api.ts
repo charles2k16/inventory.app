@@ -70,6 +70,12 @@ export const apiClient = {
     }
 
     if ( !response.ok ) {
+      // Session expired or unauthorized — clear token and redirect to login
+      if ( response.status === 401 && typeof window !== 'undefined' ) {
+        localStorage.removeItem( 'token' );
+        localStorage.removeItem( 'user' );
+        window.location.href = '/login';
+      }
       const errorMessage = isJson ? data.message || data.error : data;
       throw new Error( errorMessage || `HTTP ${ response.status }: ${ response.statusText }` );
     }
