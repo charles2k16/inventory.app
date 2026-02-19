@@ -30,6 +30,7 @@
                 Sales
               </NuxtLink>
               <NuxtLink
+                v-if="canManageReturns"
                 to="/returns"
                 class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 active-class="border-primary-500 text-gray-900 dark:text-white">
@@ -42,12 +43,21 @@
                 Lenders
               </NuxtLink>
               <NuxtLink
+                v-if="canManageReports"
                 to="/stock-reports"
                 class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 active-class="border-primary-500 text-gray-900 dark:text-white">
                 Reports
               </NuxtLink>
               <NuxtLink
+                v-if="canViewActivity"
+                to="/users"
+                class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                active-class="border-primary-500 text-gray-900 dark:text-white">
+                Users
+              </NuxtLink>
+              <NuxtLink
+                v-if="canViewActivity"
                 to="/activity-logs"
                 class="border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 active-class="border-primary-500 text-gray-900 dark:text-white">
@@ -63,6 +73,7 @@
             </div>
           </div>
           <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{ roleLabel }}</span>
             <ThemeToggle />
             <button
               @click="logout"
@@ -80,8 +91,17 @@
 </template>
 
 <script setup>
+const { user, canManageReturns, canManageReports, canViewActivity } = useAuth();
+
+const roleLabel = computed(() => {
+  const r = user.value?.role;
+  if (!r) return '';
+  return r === 'ADMIN' ? 'Admin' : r === 'MANAGER' ? 'Manager' : 'Sales';
+});
+
 const logout = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('user');
   navigateTo('/login');
 };
 </script>

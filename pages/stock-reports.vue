@@ -213,6 +213,8 @@
 import ReportDetailsModal from '~/components/ReportDetailsModal.vue';
 import VarianceModal from '~/components/VarianceModal.vue';
 
+definePageMeta({ middleware: 'role', role: 'manageReports' });
+
 const config = useRuntimeConfig();
 const reports = ref([]);
 const currentReport = ref(null);

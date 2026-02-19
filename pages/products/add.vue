@@ -291,6 +291,8 @@
 <script setup>
 import * as XLSX from 'xlsx';
 
+definePageMeta({ middleware: 'role', role: 'manageProducts' });
+
 const config = useRuntimeConfig();
 const router = useRouter();
 

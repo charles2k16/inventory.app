@@ -237,6 +237,8 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useNuxtApp } from '#app';
+
+definePageMeta({ middleware: 'role', role: 'viewActivity' });
 import StatCard from '~/components/StatCard.vue';
 import EmptyState from '~/components/EmptyState.vue';
 import LoadingSpinner from '~/components/LoadingSpinner.vue';

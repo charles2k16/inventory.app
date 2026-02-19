@@ -69,11 +69,13 @@
           <td
             class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
             <button
+              v-if="showManageActions"
               @click="$emit('edit', product)"
               class="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-300">
               Edit
             </button>
             <button
+              v-if="showManageActions"
               @click="$emit('stock', product)"
               class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
               Stock
@@ -95,6 +97,11 @@ defineProps({
   products: {
     type: Array,
     default: () => [],
+  },
+  /** Show Edit/Stock actions (Admin, Manager). Sales only see View. */
+  showManageActions: {
+    type: Boolean,
+    default: true,
   },
 });
 
