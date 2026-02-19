@@ -312,6 +312,8 @@
 </template>
 
 <script setup>
+definePageMeta({ middleware: 'role', role: 'manageStock' });
+
 const config = useRuntimeConfig();
 const router = useRouter();
 

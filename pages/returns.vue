@@ -20,3 +20,7 @@
     </main>
   </div>
 </template>
+
+<script setup>
+definePageMeta({ middleware: 'role', role: 'manageReturns' });
+</script>

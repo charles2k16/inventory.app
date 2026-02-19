@@ -1,10 +1,11 @@
 <template>
   <div>
     <header class="bg-white dark:bg-gray-800 shadow">
-      <div
-        class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+        <div
+          class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
         <NuxtLink
+          v-if="canManageProducts"
           to="/products/add"
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
           + Add Product
@@ -22,6 +23,7 @@
       <!-- Products Table -->
       <ProductsTable
         :products="paginatedProducts"
+        :show-manage-actions="canManageProducts"
         @edit="openEditModal"
         @stock="openQuickStockModal"
         @view="viewProduct" />
@@ -57,7 +59,8 @@
 </template>
 
 <script setup>
- const { $api } = useNuxtApp();
+const { canManageProducts } = useAuth();
+const { $api } = useNuxtApp();
 const products = ref([]);
 const search = ref('');
 const selectedCategory = ref('');

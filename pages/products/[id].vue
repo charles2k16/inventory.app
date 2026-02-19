@@ -15,7 +15,7 @@
           </div>
           <div class="flex gap-3">
             <button
-              v-if="!loading && !error && product"
+              v-if="!loading && !error && product && canManageStock"
               @click="showUpdateStockModal = true"
               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
               📦 Update Stock
@@ -346,6 +346,7 @@
 </template>
 
 <script setup>
+const { canManageStock } = useAuth();
 const route = useRoute();
 const config = useRuntimeConfig();
 
