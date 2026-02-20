@@ -36,15 +36,18 @@ export const apiClient = {
   },
 
   /**
-   * Build URL with query parameters
+   * Build URL with query parameters.
+   * When baseURL is relative (e.g. /api), resolve against current origin so new URL() works.
    */
   _buildUrl ( endpoint: string, params?: Record<string, any> ): string {
-    // Ensure baseURL ends with / and endpoint starts with /
     const base = this.baseURL.endsWith( '/' ) ? this.baseURL : this.baseURL + '/';
     const path = endpoint.startsWith( '/' ) ? endpoint.slice( 1 ) : endpoint;
-    const fullUrl = base + path;
+    const pathWithQuery = base + path;
 
-    const url = new URL( fullUrl );
+    const isRelative = typeof window !== 'undefined' && /^\//.test( pathWithQuery );
+    const baseForUrl = isRelative ? window.location.origin : undefined;
+    const url = new URL( pathWithQuery, baseForUrl );
+
     if ( params ) {
       Object.entries( params ).forEach( ( [ key, value ] ) => {
         if ( value !== null && value !== undefined ) {
