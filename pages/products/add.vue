@@ -482,30 +482,14 @@ const resetImport = () => {
   previewData.value = [];
 };
 
-const downloadTemplate = async () => {
-  try {
-    const { $api } = useNuxtApp();
-    const raw = await $api.request<Blob>('/products/import/template', {
-      method: 'GET',
-      responseType: 'blob',
-    });
-    const blob =
-      raw instanceof Blob
-        ? raw
-        : new Blob([raw], {
-            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          });
-
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'product-template.xlsx';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  } catch (error) {
-    errorMessage.value = 'Failed to download template: ' + error.message;
+const downloadTemplate = () => {
+  const config = useRuntimeConfig();
+  const apiBase = (config.public.apiBase || '').trim().replace(/\/api\/?$/, '');
+  const templateUrl = apiBase ? `${apiBase}/product_import_template.xlsx` : '';
+  if (templateUrl) {
+    window.open(templateUrl, '_blank');
+  } else {
+    errorMessage.value = 'Download URL not configured';
   }
 };
 </script>
