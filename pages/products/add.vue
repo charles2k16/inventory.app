@@ -485,9 +485,16 @@ const resetImport = () => {
 const downloadTemplate = async () => {
   try {
     const { $api } = useNuxtApp();
-    const blob = await $api.request('/products/import/template', {
+    const raw = await $api.request<Blob>('/products/import/template', {
       method: 'GET',
+      responseType: 'blob',
     });
+    const blob =
+      raw instanceof Blob
+        ? raw
+        : new Blob([raw], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
 
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
