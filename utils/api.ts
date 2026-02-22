@@ -19,10 +19,11 @@ export const apiClient = {
   baseURL: '',
 
   /**
-   * Initialize the API client with the base URL
+   * Initialize the API client with the base URL.
+   * Falls back to '/api' if falsy so requests never hit SPA routes and get HTML.
    */
   init ( baseURL: string ) {
-    this.baseURL = baseURL;
+    this.baseURL = ( baseURL && baseURL.trim() ) || '/api';
   },
 
   /**
@@ -42,7 +43,8 @@ export const apiClient = {
    * When baseURL is relative (e.g. /api), resolve against current origin so new URL() works.
    */
   _buildUrl ( endpoint: string, params?: Record<string, any> ): string {
-    const base = this.baseURL.endsWith( '/' ) ? this.baseURL : this.baseURL + '/';
+    const baseUrl = ( this.baseURL && this.baseURL.trim() ) || '/api';
+    const base = baseUrl.endsWith( '/' ) ? baseUrl : baseUrl + '/';
     const path = endpoint.startsWith( '/' ) ? endpoint.slice( 1 ) : endpoint;
     const pathWithQuery = base + path;
 
