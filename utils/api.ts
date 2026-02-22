@@ -5,6 +5,8 @@
 
 interface RequestOptions extends RequestInit {
   params?: Record<string, any>;
+  /** Use 'blob' for binary downloads (e.g. Excel, PDF). Default is JSON/text. */
+  responseType?: 'json' | 'text' | 'blob';
 }
 
 interface ApiResponse<T = any> {
@@ -90,13 +92,26 @@ export const apiClient = {
    * Generic request method
    */
   async request<T = any> ( endpoint: string, options: RequestOptions = {} ): Promise<T> {
-    const { params, ...fetchOptions } = options;
+    const { params, responseType, ...fetchOptions } = options;
     const url = this._buildUrl( endpoint, params );
 
     const response = await fetch( url, {
       ...fetchOptions,
       headers: this._getHeaders( fetchOptions.headers ),
     } );
+
+    if ( responseType === 'blob' ) {
+      if ( !response.ok ) {
+        if ( response.status === 401 && typeof window !== 'undefined' ) {
+          localStorage.removeItem( 'token' );
+          localStorage.removeItem( 'user' );
+          window.location.href = '/login';
+        }
+        const text = await response.text();
+        throw new Error( text || `HTTP ${ response.status }: ${ response.statusText }` );
+      }
+      return ( await response.blob() ) as T;
+    }
 
     return this._handleResponse<T>( response );
   },
