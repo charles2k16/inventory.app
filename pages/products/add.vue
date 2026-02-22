@@ -482,14 +482,24 @@ const resetImport = () => {
   previewData.value = [];
 };
 
-const downloadTemplate = () => {
-  const config = useRuntimeConfig();
-  const apiBase = (config.public.apiBase || '').trim().replace(/\/api\/?$/, '');
-  const templateUrl = apiBase ? `${apiBase}/product_import_template.xlsx` : '';
-  if (templateUrl) {
-    window.open(templateUrl, '_blank');
-  } else {
-    errorMessage.value = 'Download URL not configured';
+const downloadTemplate = async () => {
+  try {
+    const { $api } = useNuxtApp();
+    const blob = await $api.request<Blob>('/products/import/template', {
+      method: 'GET',
+      responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'product-template.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    errorMessage.value = 'Failed to download template: ' + error.message;
   }
 };
 </script>

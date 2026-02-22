@@ -29,7 +29,10 @@ export default defineNuxtConfig( {
 
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3001/api',
+      // Production: use relative /api when same-origin deploy (e.g. Railway). Set NUXT_PUBLIC_API_BASE for a different API host.
+      apiBase:
+        process.env.NUXT_PUBLIC_API_BASE ||
+        ( process.env.NODE_ENV === 'production' ? '/api' : 'http://localhost:3001/api' ),
       appName: 'Diaso Inventory System'
     }
   },
