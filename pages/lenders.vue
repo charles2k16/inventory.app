@@ -97,7 +97,8 @@
                     ">
                     {{ formatNumber(lender.currentDebt) }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap font-semibold text-sm text-green-400">
                     {{ formatNumber(lender.totalPurchased) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap">
