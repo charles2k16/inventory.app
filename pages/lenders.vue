@@ -50,7 +50,7 @@
                   </th>
                   <th
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Phone
+                    Company
                   </th>
                   <th
                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -86,7 +86,7 @@
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">
-                    {{ lender.phone || '-' }}
+                    {{ lender.notes || '-' }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-semibold"
